@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ p.nombre }} | Servicios Bahía</title>
+    <meta name="description" content="{{ p.nombre }}, {{ p.rubro }} en {{ p.ciudad }}. Contacto directo por WhatsApp.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'inicio' %}" class="logo">
+                <span class="logo-naranja">Servicios</span> Bahía
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="perfil-main">
+
+        <div class="perfil-volver">
+            <a href="{% url 'rubro_detalle' p.rubro.slug %}" class="perfil-volver-link">← Volver a {{ p.rubro.nombre }}</a>
+        </div>
+
+        <div class="perfil-wrapper">
+
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="perfil-col-izq">
+                {% if p.foto %}
+                    <img src="{{ p.foto.url }}" alt="{{ p.nombre }}" class="perfil-foto">
+                {% else %}
+                    <div class="perfil-foto-placeholder">{{ p.rubro.icono }}</div>
+                {% endif %}
+
+                <h1 class="perfil-nombre">{{ p.nombre }}</h1>
+                <p class="perfil-rubro">{{ p.rubro.nombre }}</p>
+
+                {% if p.ciudad %}
+                    <p class="perfil-ciudad">📍 {{ p.ciudad }}</p>
+                {% endif %}
+
+                {% if p.atiende_urgencias %}
+                    <span class="perfil-urgencia-badge">⚡ Atiende urgencias</span>
+                {% endif %}
+
+                <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
+                   class="btn-ws"
+                   style="width: 100%; text-align: center; margin-top: 8px;"
+                   target="_blank">
+                    💬 Contactar por WhatsApp
+                </a>
+            </div>
+
+            <!-- COLUMNA DERECHA -->
+            <div class="perfil-col-der">
+
+                {% if p.descripcion %}
+                <div class="perfil-seccion">
+                    <h2 class="perfil-seccion-titulo">Sobre el profesional</h2>
+                    <div class="perfil-descripcion">{{ p.descripcion|linebreaks }}</div>
+                </div>
+                {% endif %}
+
+                <div class="perfil-seccion">
+                    <h2 class="perfil-seccion-titulo">Información</h2>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Rubro</p>
+                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.rubro.nombre }}</p>
+                        </div>
+                        {% if p.ciudad %}
+                        <div>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Zona</p>
+                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.ciudad }}</p>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Urgencias</p>
+                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{% if p.atiende_urgencias %}⚡ Sí{% else %}No{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA FINAL -->
+                <div class="perfil-cta-final">
+                    <p>¿Querés contratar a {{ p.nombre }}?</p>
+                    <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
+                       class="btn-ws"
+                       style="display: inline-block; padding: 14px 40px;"
+                       target="_blank">
+                        💬 Escribir por WhatsApp
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
+    </footer>
+
+</body>
+</html>

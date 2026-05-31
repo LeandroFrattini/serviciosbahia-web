@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios Bahía | Profesionales a tu alcance</title>
+    <meta name="description" content="Encontrá electricistas, plomeros, gasistas, enfermeros y más profesionales en Bahía Blanca y alrededores. Contacto directo por WhatsApp.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'inicio' %}" class="logo">
+                <span class="logo-naranja">Servicios</span> Bahía
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="home-hero">
+        <div class="home-hero-inner">
+            <h1>El profesional que necesitás,<br><span>cuando lo necesitás</span></h1>
+            <p>Conectamos vecinos de Bahía Blanca con electricistas, plomeros, gasistas y más. Contacto directo, sin intermediarios.</p>
+            <div class="home-hero-btns">
+                <a href="#rubros" class="btn-primary">Ver profesionales</a>
+                <a href="{% url 'unete' %}" class="btn-secondary" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.4);">Soy profesional →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="home-stats">
+        <div class="stat-item">
+            <span class="stat-numero">+50</span>
+            <span class="stat-label">Profesionales activos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-numero">12</span>
+            <span class="stat-label">Rubros disponibles</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-numero">100%</span>
+            <span class="stat-label">Contacto directo</span>
+        </div>
+    </section>
+
+    <!-- RUBROS -->
+    <section class="home-rubros" id="rubros">
+        <h2 class="home-section-title">¿Qué servicio necesitás?</h2>
+        <p class="home-section-subtitle">Seleccioná el rubro y encontrá el profesional ideal para vos</p>
+        <div class="rubros-grid">
+            {% for rubro in rubros %}
+            <a href="{% url 'rubro_detalle' rubro.slug %}" class="rubro-card">
+                <span class="rubro-icono">{{ rubro.icono }}</span>
+                <p class="rubro-nombre">{{ rubro.nombre }}</p>
+                <p class="rubro-count">{{ rubro.profesionales.count }} profesional{% if rubro.profesionales.count != 1 %}es{% endif %}</p>
+            </a>
+            {% empty %}
+            <p style="grid-column: 1/-1; text-align:center; color:#888;">Próximamente...</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="home-como">
+        <div class="home-como-inner">
+            <h2 class="home-section-title">¿Cómo funciona?</h2>
+            <div class="home-pasos">
+                <div class="home-paso">
+                    <div class="home-paso-numero">1</div>
+                    <h4>Elegí el rubro</h4>
+                    <p>Seleccioná el tipo de servicio que necesitás.</p>
+                </div>
+                <div class="home-paso-flecha">→</div>
+                <div class="home-paso">
+                    <div class="home-paso-numero">2</div>
+                    <h4>Conocé al profesional</h4>
+                    <p>Leé su perfil, zona y experiencia.</p>
+                </div>
+                <div class="home-paso-flecha">→</div>
+                <div class="home-paso">
+                    <div class="home-paso-numero">3</div>
+                    <h4>Contactalo por WhatsApp</h4>
+                    <p>Directo, sin formularios ni esperas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA PROFESIONALES -->
+    <section class="home-cta-pro">
+        <div class="home-cta-pro-inner">
+            <h2>¿Sos profesional o trabajador independiente?</h2>
+            <p>Sumarte a Servicios Bahía es la forma más simple de conseguir clientes en tu zona. Vos manejás tus precios y horarios.</p>
+            <a href="{% url 'unete' %}" class="btn-secondary">Quiero sumarme →</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
+    </footer>
+
+</body>
+</html>

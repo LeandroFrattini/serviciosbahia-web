@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumate como profesional | Servicios Bahía</title>
+    <meta name="description" content="Sumá tu perfil a Servicios Bahía y conseguí clientes en Bahía Blanca. Sin exclusividad, manejás tus precios.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'inicio' %}" class="logo">
+                <span class="logo-naranja">Servicios</span> Bahía
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'inicio' %}">Inicio</a></li>
+                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="unete-hero">
+        <div class="unete-hero-inner">
+            <span class="unete-badge">Para profesionales</span>
+            <h1>Conseguí clientes<br>en tu zona</h1>
+            <p>Sumarte a Servicios Bahía es simple, sin exclusividad y vos manejás tus precios y horarios.</p>
+            <a href="https://forms.gle/TUFORMULARIOACA" target="_blank" class="btn-primary">Quiero sumarme →</a>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="unete-beneficios">
+        <h2 class="home-section-title">¿Qué ganás sumándote?</h2>
+        <div class="unete-grid">
+            <div class="unete-card">
+                <span>📣</span>
+                <h4>Visibilidad local</h4>
+                <p>Tu perfil aparece frente a vecinos de Bahía Blanca que ya están buscando tu servicio.</p>
+            </div>
+            <div class="unete-card">
+                <span>💬</span>
+                <h4>Contacto directo</h4>
+                <p>Los clientes te escriben directo por WhatsApp. Sin intermediarios ni comisiones por trabajo.</p>
+            </div>
+            <div class="unete-card">
+                <span>💰</span>
+                <h4>Vos fijás tus precios</span>
+                <p>Servicios Bahía no interviene en tus tarifas. Los acordás directamente con el cliente.</p>
+            </div>
+            <div class="unete-card">
+                <span>🗓️</span>
+                <h4>Sin exclusividad</h4>
+                <p>Podés trabajar con otros canales. Somos un ingreso más para vos, no una atadura.</p>
+            </div>
+            <div class="unete-card">
+                <span>⚡</span>
+                <h4>Urgencias destacadas</h4>
+                <p>Si atendés urgencias, tu perfil aparece destacado para quienes necesitan ayuda inmediata.</p>
+            </div>
+            <div class="unete-card">
+                <span>🔓</span>
+                <h4>Cancelás cuando querés</h4>
+                <p>Sin contratos largos. Si querés darte de baja, lo resolvemos por WhatsApp ese mismo día.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="unete-cta">
+        <div class="unete-cta-inner">
+            <h2>¿Listo para sumar clientes?</h2>
+            <p>Completá el formulario y nos contactamos en menos de 24hs.</p>
+            <a href="https://forms.gle/TUFORMULARIOACA" target="_blank" class="btn-secondary">Completar formulario →</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
+    </footer>
+
+</body>
+</html>
