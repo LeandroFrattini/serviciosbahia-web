@@ -11,12 +11,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
 </head>
+    <style>
+        .rubro-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .rubro-card.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.rubro-card');
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, i) => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.classList.add('visible');
+                            }, i * 100);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.05 });
+
+                cards.forEach(card => observer.observe(card));
+            } else {
+                cards.forEach(card => card.classList.add('visible'));
+            }
+        });
+</script>
 <body>
 
     <nav>
         <div class="nav-container">
             <a href="{% url 'inicio' %}" class="logo">
-                <span class="logo-naranja">Servicios</span> Bahía
+                <img src="{% static 'img/logo_horizontal.svg' %}" alt="Servicios Bahía" style="height: 62px;">
             </a>
             <ul class="nav-links">
                 <li><a href="{% url 'inicio' %}">Inicio</a></li>
