@@ -1,66 +1,42 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servicios Bahía | Profesionales a tu alcance</title>
-    <meta name="description" content="Encontrá electricistas, plomeros, gasistas, enfermeros y más profesionales en Bahía Blanca y alrededores. Contacto directo por WhatsApp.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
-</head>
-    <style>
-        .rubro-card {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+
+{% block extra_head %}
+<style>
+    .rubro-card {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .rubro-card.visible {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.rubro-card');
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, i) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, i * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+            cards.forEach(card => observer.observe(card));
+        } else {
+            cards.forEach(card => card.classList.add('visible'));
         }
-
-        .rubro-card.visible {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.rubro-card');
-
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry, i) => {
-                        if (entry.isIntersecting) {
-                            setTimeout(() => {
-                                entry.target.classList.add('visible');
-                            }, i * 100);
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.05 });
-
-                cards.forEach(card => observer.observe(card));
-            } else {
-                cards.forEach(card => card.classList.add('visible'));
-            }
-        });
+    });
 </script>
-<body>
+{% endblock %}
 
-    <nav>
-        <div class="nav-container">
-            <a href="{% url 'inicio' %}" class="logo">
-                <img src="{% static 'img/logo_horizontal.svg' %}" alt="Servicios Bahía" style="height: 62px;">
-            </a>
-            <ul class="nav-links">
-                <li><a href="{% url 'inicio' %}">Inicio</a></li>
-                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
-            </ul>
-        </div>
-    </nav>
+{% block content %}
 
-    <!-- HERO -->
     <section class="home-hero">
         <div class="home-hero-inner">
             <h1>El profesional que necesitás,<br><span>cuando lo necesitás</span></h1>
@@ -72,7 +48,6 @@
         </div>
     </section>
 
-    <!-- STATS -->
     <section class="home-stats">
         <div class="stat-item">
             <span class="stat-numero">+50</span>
@@ -90,7 +65,6 @@
         </div>
     </section>
 
-    <!-- RUBROS -->
     <section class="home-rubros" id="rubros">
         <h2 class="home-section-title">¿Qué servicio necesitás?</h2>
         <p class="home-section-subtitle">Seleccioná el rubro y encontrá el profesional ideal para vos</p>
@@ -107,7 +81,6 @@
         </div>
     </section>
 
-    <!-- CÓMO FUNCIONA -->
     <section class="home-como">
         <div class="home-como-inner">
             <h2 class="home-section-title">¿Cómo funciona?</h2>
@@ -133,7 +106,6 @@
         </div>
     </section>
 
-    <!-- CTA PROFESIONALES -->
     <section class="home-cta-pro">
         <div class="home-cta-pro-inner">
             <h2>¿Sos profesional o trabajador independiente?</h2>
@@ -142,9 +114,4 @@
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
-    </footer>
-
-</body>
-</html>
+{% endblock %}
