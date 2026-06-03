@@ -20,8 +20,10 @@
                 <img src="{% static 'img/logo_horizontal.svg' %}" alt="Servicios Bahía" style="height: 62px;">
             </a>
             <ul class="nav-links">
-                <li><a href="{% url 'inicio' %}">Inicio</a></li>
-                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
+                <li><a href="{% url 'inicio' %}">Servicios</a></li>
+                <li><a href="{% url 'clasificados' %}">Clasificados</a></li>
+                <li><a href="{% url 'clasificados' %}" class="btn-unete-nav">Publicá tu aviso</a></li>
+                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como prestador</a></li>
             </ul>
         </div>
     </nav>
@@ -30,6 +32,9 @@
 
     <footer>
         <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
+        <a href="https://www.instagram.com/servicios.bahia/" target="_blank" class="footer-ig">
+            📷 @servicios.bahia
+        </a>
     </footer>
 
 </body>

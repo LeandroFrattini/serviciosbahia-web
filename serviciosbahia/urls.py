@@ -8,8 +8,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.inicio, name='inicio'),
     path('unete/', views.unete, name='unete'),
-    path('<slug:slug>/', views.rubro_detalle, name='rubro_detalle'),
+    path('clasificados/', views.clasificados, name='clasificados'),
     path('<slug:slug>/perfil/<slug:perfil_slug>/', views.perfil, name='perfil'),
+    path('<slug:slug>/', views.rubro_detalle, name='rubro_detalle'),
 ]
 
 if settings.DEBUG:

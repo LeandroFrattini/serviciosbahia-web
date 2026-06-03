@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Case, When, Value, IntegerField
+from django.utils import timezone
 import random
-from .models import Profesional, Rubro, Zona
+from .models import Profesional, Rubro, Zona, CategoriaAviso, Aviso
 
 def inicio(request):
     rubros = Rubro.objects.all()
@@ -39,3 +40,27 @@ def perfil(request, slug, perfil_slug):
 def unete(request):
     rubros = Rubro.objects.all()
     return render(request, 'profesionales/unete.html', {'rubros': rubros})
+
+def clasificados(request):
+    hoy = timezone.now().date()
+    categoria_slug = request.GET.get('categoria')
+    categorias = CategoriaAviso.objects.all()
+
+    avisos = Aviso.objects.filter(
+        activo=True,
+        fecha_desde__lte=hoy,
+        fecha_hasta__gte=hoy
+    )
+
+    if categoria_slug:
+        avisos = avisos.filter(categoria__slug=categoria_slug)
+
+    categoria_activa = None
+    if categoria_slug:
+        categoria_activa = CategoriaAviso.objects.filter(slug=categoria_slug).first()
+
+    return render(request, 'profesionales/clasificados.html', {
+        'avisos': avisos,
+        'categorias': categorias,
+        'categoria_activa': categoria_activa,
+    })

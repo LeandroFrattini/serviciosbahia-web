@@ -1,31 +1,11 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ rubro.nombre }} en Bahía Blanca | Servicios Bahía</title>
-    <meta name="description" content="Encontrá {{ rubro.nombre }} en Bahía Blanca. Contacto directo por WhatsApp, sin intermediarios.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'style.css' %}?v=1.0">
-</head>
-<body>
 
-    <nav>
-        <div class="nav-container">
-            <a href="{% url 'inicio' %}" class="logo">
-                <span class="logo-naranja">Servicios</span> Bahía
-            </a>
-            <ul class="nav-links">
-                <li><a href="{% url 'inicio' %}">Inicio</a></li>
-                <li><a href="{% url 'unete' %}" class="btn-unete-nav">Sumate como profesional</a></li>
-            </ul>
-        </div>
-    </nav>
+{% block title %}{{ rubro.nombre }} en Bahía Blanca | Servicios Bahía{% endblock %}
+{% block meta_description %}Encontrá {{ rubro.nombre }} en Bahía Blanca. Contacto directo por WhatsApp.{% endblock %}
 
-    <!-- HERO RUBRO -->
+{% block content %}
+
     <section class="rubro-hero">
         <div class="rubro-hero-inner">
             <span class="rubro-hero-icono">{{ rubro.icono }}</span>
@@ -34,7 +14,6 @@
         </div>
     </section>
 
-    <!-- FILTROS -->
     <section class="rubro-filtros">
         <form method="GET" class="rubro-filtros-form">
             <div class="filtro-grupo">
@@ -49,47 +28,35 @@
         </form>
     </section>
 
-    <!-- RESULTADOS -->
     <main class="rubro-main">
-
         <div class="rubro-contador">
             {% if profesionales %}
                 Mostrando <strong>{{ profesionales|length }}</strong> profesional{% if profesionales|length != 1 %}es{% endif %}
                 {% if ciudad %} en <strong>{{ ciudad }}</strong>{% endif %}
             {% endif %}
         </div>
-
         <div class="results-grid">
             {% for p in profesionales %}
             <div class="pro-card">
-
                 {% if p.foto %}
                     <img src="{{ p.foto.url }}" alt="{{ p.nombre }}" class="pro-card-foto">
                 {% else %}
                     <div class="pro-card-foto-placeholder">{{ rubro.icono }}</div>
                 {% endif %}
-
                 <p class="pro-card-nombre">{{ p.nombre }}</p>
-
                 {% if p.ciudad %}
                     <p class="pro-card-ciudad">📍 {{ p.ciudad }}</p>
                 {% endif %}
-
                 <div class="pro-card-tags">
                     {% if p.atiende_urgencias %}
                         <span class="pro-card-tag pro-card-tag-urgencia">⚡ Urgencias</span>
                     {% endif %}
                 </div>
-
                 <div class="pro-card-btns">
                     <a href="{% url 'perfil' rubro.slug p.slug %}" class="btn-ver-perfil">Ver perfil</a>
                     <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
-                       class="btn-ws"
-                       target="_blank">
-                        💬 WhatsApp
-                    </a>
+                       class="btn-ws" target="_blank">💬 WhatsApp</a>
                 </div>
-
             </div>
             {% empty %}
             <div class="rubro-empty">
@@ -100,12 +67,6 @@
             </div>
             {% endfor %}
         </div>
-
     </main>
 
-    <footer>
-        <p>&copy; 2026 Servicios Bahía - Todos los derechos reservados</p>
-    </footer>
-
-</body>
-</html>
+{% endblock %}

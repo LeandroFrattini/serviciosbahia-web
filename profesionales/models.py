@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
 
 class Rubro(models.Model):
     nombre = models.CharField(max_length=100)
@@ -55,3 +56,40 @@ class Profesional(models.Model):
     class Meta:
         verbose_name_plural = "Profesionales"
         ordering = ['nombre']
+
+class CategoriaAviso(models.Model):
+    nombre = models.CharField(max_length=100)
+    icono = models.CharField(max_length=10)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Categoría de aviso"
+        verbose_name_plural = "Categorías de avisos"
+
+
+class Aviso(models.Model):
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True)
+    precio = models.CharField(max_length=100, blank=True)
+    foto = models.ImageField(upload_to='avisos/', blank=True, null=True)
+    whatsapp = models.CharField(max_length=20)
+    categoria = models.ForeignKey(CategoriaAviso, on_delete=models.CASCADE, related_name='avisos')
+    ciudad = models.CharField(max_length=100, blank=True)
+    fecha_desde = models.DateField()
+    fecha_hasta = models.DateField()
+    activo = models.BooleanField(default=True)
+
+    def esta_vigente(self):
+        hoy = timezone.now().date()
+        return self.activo and self.fecha_desde <= hoy <= self.fecha_hasta
+
+    def __str__(self):
+        return self.titulo
+
+    class Meta:
+        verbose_name = "Aviso"
+        verbose_name_plural = "Avisos"
+        ordering = ['-fecha_desde']

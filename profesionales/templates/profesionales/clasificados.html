@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Clasificados Bahía Blanca | Servicios Bahía{% endblock %}
+{% block meta_description %}Clasificados en Bahía Blanca. Vehículos, propiedades, electrónica y más. Contacto directo por WhatsApp.{% endblock %}
+
+{% block content %}
+
+<section class="rubro-hero">
+    <div class="rubro-hero-inner">
+        <span class="rubro-hero-icono">📋</span>
+        <h1>Clasificados Bahía Blanca</h1>
+        <p>Publicaciones verificadas · Contacto directo por WhatsApp</p>
+    </div>
+</section>
+
+<section class="rubro-filtros">
+    <div class="rubro-filtros-form">
+        <a href="{% url 'clasificados' %}"
+           class="{% if not categoria_activa %}btn-filtrar{% else %}btn-ver-perfil{% endif %}">
+            Todos
+        </a>
+        {% for cat in categorias %}
+        <a href="{% url 'clasificados' %}?categoria={{ cat.slug }}"
+           class="{% if categoria_activa.slug == cat.slug %}btn-filtrar{% else %}btn-ver-perfil{% endif %}">
+            {{ cat.icono }} {{ cat.nombre }}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<main class="rubro-main">
+
+    <div class="rubro-contador">
+        {% if avisos %}
+            Mostrando <strong>{{ avisos|length }}</strong> aviso{% if avisos|length != 1 %}s{% endif %}
+            {% if categoria_activa %} en <strong>{{ categoria_activa.nombre }}</strong>{% endif %}
+        {% endif %}
+    </div>
+
+    <div class="results-grid">
+        {% for aviso in avisos %}
+        <div class="pro-card">
+
+            {% if aviso.foto %}
+                <img src="{{ aviso.foto.url }}" alt="{{ aviso.titulo }}" class="pro-card-foto">
+            {% else %}
+                <div class="pro-card-foto-placeholder">{{ aviso.categoria.icono }}</div>
+            {% endif %}
+
+            <p class="pro-card-nombre">{{ aviso.titulo }}</p>
+
+            {% if aviso.precio %}
+                <p style="font-size: 1.1rem; font-weight: 700; color: #f97316; margin: 4px 0;">{{ aviso.precio }}</p>
+            {% endif %}
+
+            {% if aviso.ciudad %}
+                <p class="pro-card-ciudad">📍 {{ aviso.ciudad }}</p>
+            {% endif %}
+
+            {% if aviso.descripcion %}
+                <p style="font-size: 0.85rem; color: #666; margin: 6px 0; line-height: 1.4;">{{ aviso.descripcion|truncatewords:15 }}</p>
+            {% endif %}
+
+            <div class="pro-card-btns" style="margin-top: auto;">
+                <a href="https://wa.me/{{ aviso.whatsapp }}?text=Hola,%20vi%20tu%20aviso%20en%20Servicios%20Bah%C3%ADa:%20{{ aviso.titulo }}"
+                   class="btn-ws"
+                   target="_blank">
+                    💬 Contactar
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="rubro-empty">
+            <span>📋</span>
+            <h3>No hay avisos en esta categoría</h3>
+            <p>Volvé pronto, se agregan nuevos cada semana.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</main>
+
+{% endblock %}
