@@ -955,12 +955,15 @@ footer {
 }
 
 .footer-ig {
-    display: block;
-    margin-top: 8px;
-    color: #f97316;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    color: rgba(255,255,255,0.7);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    transition: color 0.2s;
 }
 .footer-ig:hover {
-    text-decoration: underline;
+    color: #F4A623;
 }

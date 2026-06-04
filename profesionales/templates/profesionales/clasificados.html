@@ -2,84 +2,590 @@
 {% load static %}
 
 {% block title %}Clasificados Bahía Blanca | Servicios Bahía{% endblock %}
-{% block meta_description %}Clasificados en Bahía Blanca. Vehículos, propiedades, electrónica y más. Contacto directo por WhatsApp.{% endblock %}
+
+{% block extra_head %}
+<style>
+.clasificados-hero {
+    background: #1B3A5C;
+    padding: 40px 20px;
+    text-align: center;
+}
+.clasificados-hero h1 {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.clasificados-hero p {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.95rem;
+}
+.clasificados-cats {
+    padding: 20px 24px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.cat-pill {
+    padding: 7px 18px;
+    border-radius: 30px;
+    border: 1.5px solid #ddd;
+    font-size: 0.85rem;
+    color: #555;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    background: white;
+}
+.cat-pill:hover {
+    border-color: #1B3A5C;
+    color: #1B3A5C;
+}
+.cat-pill.activo {
+    background: #1B3A5C;
+    border-color: #1B3A5C;
+    color: white;
+}
+.clasificados-grid {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.aviso-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.aviso-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+.aviso-card-img {
+    height: 180px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    overflow: hidden;
+}
+.aviso-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.aviso-card-body {
+    padding: 14px 16px;
+}
+.aviso-card-cat {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #E67E22;
+    margin-bottom: 4px;
+}
+.aviso-card-titulo {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+.aviso-card-precio {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1B3A5C;
+    margin-bottom: 8px;
+}
+.aviso-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.aviso-card-loc {
+    font-size: 0.82rem;
+    color: #888;
+}
+.aviso-card-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.btn-wa-card {
+    background: #25d366;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s;
+}
+.btn-wa-card:hover {
+    background: #1ebe5d;
+}
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-overlay.abierto {
+    display: flex;
+}
+.modal-box {
+    background: white;
+    border-radius: 16px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+.modal-cerrar {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+    z-index: 10;
+    line-height: 1;
+}
+.modal-cerrar:hover { color: #333; }
+.modal-fotos {
+    position: relative;
+    height: 260px;
+    background: #f5f5f5;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+.modal-fotos img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    cursor: zoom-in;
+}
+.modal-fotos img.activa {
+    display: block;
+}
+.modal-nav-foto {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.85);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-nav-foto.prev { left: 10px; }
+.modal-nav-foto.next { right: 10px; }
+.modal-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+}
+.modal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border: none;
+}
+.modal-dot.activo { background: white; }
+.modal-content {
+    padding: 20px 24px 28px;
+}
+.modal-cat {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #E67E22;
+    margin-bottom: 6px;
+}
+.modal-titulo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+}
+.modal-precio {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1B3A5C;
+    margin-bottom: 12px;
+}
+.modal-desc {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    white-space: pre-line;
+}
+.modal-info {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.modal-info-item {
+    font-size: 0.85rem;
+    color: #888;
+}
+.modal-info-item strong {
+    color: #333;
+    display: block;
+    font-size: 0.9rem;
+}
+.btn-wa-modal {
+    display: block;
+    text-align: center;
+    background: #25d366;
+    color: white !important;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-wa-modal:hover { background: #1ebe5d; }
+.lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-overlay.abierto {
+    display: flex;
+}
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+.lightbox-cerrar {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 100000;
+    line-height: 1;
+}
+.lightbox-cerrar:hover { color: #ccc; }
+.lightbox-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+.lightbox-nav.prev { left: 16px; }
+.lightbox-nav.next { right: 16px; }
+.lightbox-counter {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 
-<section class="rubro-hero">
-    <div class="rubro-hero-inner">
-        <span class="rubro-hero-icono">📋</span>
-        <h1>Clasificados Bahía Blanca</h1>
-        <p>Publicaciones verificadas · Contacto directo por WhatsApp</p>
-    </div>
-</section>
+<div class="clasificados-hero">
+    <h1>Clasificados Bahía Blanca</h1>
+    <p>Publicaciones verificadas · Contacto directo por WhatsApp</p>
+</div>
 
-<section class="rubro-filtros">
-    <div class="rubro-filtros-form">
-        <a href="{% url 'clasificados' %}"
-           class="{% if not categoria_activa %}btn-filtrar{% else %}btn-ver-perfil{% endif %}">
-            Todos
-        </a>
+<div style="background: white; border-bottom: 1px solid #eee;">
+    <div class="clasificados-cats">
+        <a href="{% url 'clasificados' %}" class="cat-pill {% if not categoria_activa %}activo{% endif %}">Todos</a>
         {% for cat in categorias %}
         <a href="{% url 'clasificados' %}?categoria={{ cat.slug }}"
-           class="{% if categoria_activa.slug == cat.slug %}btn-filtrar{% else %}btn-ver-perfil{% endif %}">
+           class="cat-pill {% if categoria_activa.slug == cat.slug %}activo{% endif %}">
             {{ cat.icono }} {{ cat.nombre }}
         </a>
         {% endfor %}
     </div>
-</section>
+</div>
 
-<main class="rubro-main">
-
-    <div class="rubro-contador">
-        {% if avisos %}
-            Mostrando <strong>{{ avisos|length }}</strong> aviso{% if avisos|length != 1 %}s{% endif %}
-            {% if categoria_activa %} en <strong>{{ categoria_activa.nombre }}</strong>{% endif %}
-        {% endif %}
-    </div>
-
-    <div class="results-grid">
-        {% for aviso in avisos %}
-        <div class="pro-card">
-
-            {% if aviso.foto %}
-                <img src="{{ aviso.foto.url }}" alt="{{ aviso.titulo }}" class="pro-card-foto">
+<div class="clasificados-grid">
+    {% for aviso in avisos %}
+    {% with primera_foto=aviso.fotos.first %}
+    <div class="aviso-card"
+         onclick="abrirModal(
+            '{{ aviso.titulo|escapejs }}',
+            '{{ aviso.categoria.nombre|escapejs }}',
+            '{{ aviso.precio|escapejs }}',
+            '{{ aviso.descripcion|escapejs }}',
+            '{{ aviso.ciudad|escapejs }}',
+            '{{ aviso.whatsapp }}',
+            [{% for f in aviso.fotos.all %}'{{ f.imagen.url }}'{% if not forloop.last %},{% endif %}{% endfor %}]
+         )">
+        <div class="aviso-card-img">
+            {% if primera_foto %}
+                <img src="{{ primera_foto.imagen.url }}" alt="{{ aviso.titulo }}">
             {% else %}
-                <div class="pro-card-foto-placeholder">{{ aviso.categoria.icono }}</div>
+                {{ aviso.categoria.icono }}
             {% endif %}
-
-            <p class="pro-card-nombre">{{ aviso.titulo }}</p>
-
+        </div>
+        <div class="aviso-card-body">
+            <p class="aviso-card-cat">{{ aviso.categoria.nombre }}</p>
+            <p class="aviso-card-titulo">{{ aviso.titulo }}</p>
             {% if aviso.precio %}
-                <p style="font-size: 1.1rem; font-weight: 700; color: #f97316; margin: 4px 0;">{{ aviso.precio }}</p>
+                <p class="aviso-card-precio">{{ aviso.precio }}</p>
             {% endif %}
-
-            {% if aviso.ciudad %}
-                <p class="pro-card-ciudad">📍 {{ aviso.ciudad }}</p>
-            {% endif %}
-
             {% if aviso.descripcion %}
-                <p style="font-size: 0.85rem; color: #666; margin: 6px 0; line-height: 1.4;">{{ aviso.descripcion|truncatewords:15 }}</p>
+                <p class="aviso-card-desc">{{ aviso.descripcion }}</p>
             {% endif %}
-
-            <div class="pro-card-btns" style="margin-top: auto;">
-                <a href="https://wa.me/{{ aviso.whatsapp }}?text=Hola,%20vi%20tu%20aviso%20en%20Servicios%20Bah%C3%ADa:%20{{ aviso.titulo }}"
-                   class="btn-ws"
-                   target="_blank">
-                    💬 Contactar
+            <div class="aviso-card-footer">
+                <span class="aviso-card-loc">{% if aviso.ciudad %}📍 {{ aviso.ciudad }}{% endif %}</span>
+                <a href="https://wa.me/{{ aviso.whatsapp }}?text=Hola,%20vi%20tu%20aviso%20en%20Servicios%20Bah%C3%ADa:%20{{ aviso.titulo|urlencode }}"
+                   class="btn-wa-card"
+                   target="_blank"
+                   onclick="event.stopPropagation()">
+                    💬 WhatsApp
                 </a>
             </div>
-
         </div>
-        {% empty %}
-        <div class="rubro-empty">
-            <span>📋</span>
-            <h3>No hay avisos en esta categoría</h3>
-            <p>Volvé pronto, se agregan nuevos cada semana.</p>
-        </div>
-        {% endfor %}
     </div>
+    {% endwith %}
+    {% empty %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #888;">
+        <p style="font-size: 2rem; margin-bottom: 12px;">📋</p>
+        <h3 style="color: #555; margin-bottom: 8px;">No hay avisos en esta categoría</h3>
+        <p>Volvé pronto, se agregan nuevos cada semana.</p>
+    </div>
+    {% endfor %}
+</div>
 
-</main>
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="cerrarModalSiFondo(event)">
+    <div class="modal-box">
+        <button class="modal-cerrar" onclick="cerrarModal()">×</button>
+        <div class="modal-fotos" id="modal-fotos">
+            <span id="modal-icono"></span>
+        </div>
+        <div class="modal-content">
+            <p class="modal-cat" id="modal-cat"></p>
+            <h2 class="modal-titulo" id="modal-titulo"></h2>
+            <p class="modal-precio" id="modal-precio"></p>
+            <p class="modal-desc" id="modal-desc"></p>
+            <div class="modal-info">
+                <div class="modal-info-item">
+                    <strong id="modal-ciudad"></strong>
+                    Ubicación
+                </div>
+            </div>
+            <a href="#" class="btn-wa-modal" id="modal-wa" target="_blank">💬 Contactar por WhatsApp</a>
+        </div>
+    </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="cerrarLightboxSiFondo(event)">
+    <button class="lightbox-cerrar" onclick="cerrarLightbox()">×</button>
+    <button class="lightbox-nav prev" id="lb-prev" onclick="cambiarLightbox(-1)">‹</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <button class="lightbox-nav next" id="lb-next" onclick="cambiarLightbox(1)">›</button>
+    <span class="lightbox-counter" id="lb-counter"></span>
+</div>
+
+<script>
+let fotosActuales = [];
+let fotoIndex = 0;
+let fotosLightbox = [];
+let lbIndex = 0;
+
+function abrirModal(titulo, cat, precio, desc, ciudad, wa, fotos) {
+    document.getElementById('modal-titulo').textContent = titulo;
+    document.getElementById('modal-cat').textContent = cat;
+    document.getElementById('modal-precio').textContent = precio;
+    document.getElementById('modal-desc').textContent = desc;
+    document.getElementById('modal-ciudad').textContent = ciudad || 'No especificada';
+    document.getElementById('modal-wa').href = 'https://wa.me/' + wa + '?text=Hola,%20vi%20tu%20aviso%20en%20Servicios%20Bah%C3%ADa:%20' + encodeURIComponent(titulo);
+
+    const contenedor = document.getElementById('modal-fotos');
+    contenedor.querySelectorAll('img').forEach(el => el.remove());
+    contenedor.querySelectorAll('.modal-nav-foto').forEach(el => el.remove());
+    contenedor.querySelectorAll('.modal-dots').forEach(el => el.remove());
+
+    fotosActuales = fotos;
+    fotoIndex = 0;
+
+    if (fotos.length > 0) {
+        document.getElementById('modal-icono').style.display = 'none';
+        fotos.forEach((url, i) => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.cursor = 'zoom-in';
+            if (i === 0) img.classList.add('activa');
+            img.onclick = (e) => { e.stopPropagation(); abrirLightbox(fotos, i); };
+            contenedor.appendChild(img);
+        });
+        if (fotos.length > 1) {
+            const prev = document.createElement('button');
+            prev.className = 'modal-nav-foto prev';
+            prev.innerHTML = '‹';
+            prev.onclick = (e) => { e.stopPropagation(); cambiarFoto(-1); };
+            const next = document.createElement('button');
+            next.className = 'modal-nav-foto next';
+            next.innerHTML = '›';
+            next.onclick = (e) => { e.stopPropagation(); cambiarFoto(1); };
+            contenedor.appendChild(prev);
+            contenedor.appendChild(next);
+
+            const dots = document.createElement('div');
+            dots.className = 'modal-dots';
+            fotos.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'modal-dot' + (i === 0 ? ' activo' : '');
+                dot.onclick = (e) => { e.stopPropagation(); irAFoto(i); };
+                dots.appendChild(dot);
+            });
+            contenedor.appendChild(dots);
+        }
+    } else {
+        document.getElementById('modal-icono').style.display = 'block';
+    }
+
+    document.getElementById('modal').classList.add('abierto');
+    document.body.style.overflow = 'hidden';
+}
+
+function cambiarFoto(dir) {
+    fotoIndex = (fotoIndex + dir + fotosActuales.length) % fotosActuales.length;
+    irAFoto(fotoIndex);
+}
+
+function irAFoto(i) {
+    fotoIndex = i;
+    const imgs = document.querySelectorAll('#modal-fotos img');
+    const dots = document.querySelectorAll('.modal-dot');
+    imgs.forEach((img, idx) => img.classList.toggle('activa', idx === i));
+    dots.forEach((dot, idx) => dot.classList.toggle('activo', idx === i));
+}
+
+function cerrarModal() {
+    document.getElementById('modal').classList.remove('abierto');
+    document.body.style.overflow = '';
+}
+
+function cerrarModalSiFondo(e) {
+    if (e.target.id === 'modal') cerrarModal();
+}
+
+function abrirLightbox(fotos, index) {
+    fotosLightbox = fotos;
+    lbIndex = index;
+    actualizarLightbox();
+    document.getElementById('lightbox').classList.add('abierto');
+    document.getElementById('lb-prev').style.display = fotos.length > 1 ? 'flex' : 'none';
+    document.getElementById('lb-next').style.display = fotos.length > 1 ? 'flex' : 'none';
+}
+
+function actualizarLightbox() {
+    document.getElementById('lightbox-img').src = fotosLightbox[lbIndex];
+    document.getElementById('lb-counter').textContent = fotosLightbox.length > 1
+        ? (lbIndex + 1) + ' / ' + fotosLightbox.length
+        : '';
+}
+
+function cambiarLightbox(dir) {
+    lbIndex = (lbIndex + dir + fotosLightbox.length) % fotosLightbox.length;
+    actualizarLightbox();
+}
+
+function cerrarLightbox() {
+    document.getElementById('lightbox').classList.remove('abierto');
+}
+
+function cerrarLightboxSiFondo(e) {
+    if (e.target.id === 'lightbox') cerrarLightbox();
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        if (document.getElementById('lightbox').classList.contains('abierto')) {
+            cerrarLightbox();
+        } else {
+            cerrarModal();
+        }
+    }
+    if (e.key === 'ArrowLeft') {
+        if (document.getElementById('lightbox').classList.contains('abierto')) cambiarLightbox(-1);
+        else cambiarFoto(-1);
+    }
+    if (e.key === 'ArrowRight') {
+        if (document.getElementById('lightbox').classList.contains('abierto')) cambiarLightbox(1);
+        else cambiarFoto(1);
+    }
+});
+</script>
 
 {% endblock %}

@@ -93,3 +93,14 @@ class Aviso(models.Model):
         verbose_name = "Aviso"
         verbose_name_plural = "Avisos"
         ordering = ['-fecha_desde']
+
+class FotoAviso(models.Model):
+    aviso = models.ForeignKey(Aviso, on_delete=models.CASCADE, related_name='fotos')
+    imagen = models.ImageField(upload_to='avisos/')
+
+    def __str__(self):
+        return f"Foto de {self.aviso.titulo}"
+
+    class Meta:
+        verbose_name = "Foto de aviso"
+        verbose_name_plural = "Fotos de aviso"
