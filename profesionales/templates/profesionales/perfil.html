@@ -6,65 +6,393 @@
 
 {% block content %}
 
-    <main class="perfil-main">
-        <div class="perfil-volver">
-            <a href="{% url 'rubro_detalle' p.rubro.slug %}" class="perfil-volver-link">← Volver a {{ p.rubro.nombre }}</a>
-        </div>
-        <div class="perfil-wrapper">
-            <div class="perfil-col-izq">
-                {% if p.foto %}
-                    <img src="{{ p.foto.url }}" alt="{{ p.nombre }}" class="perfil-foto">
-                {% else %}
-                    <div class="perfil-foto-placeholder">{{ p.rubro.icono }}</div>
-                {% endif %}
-                <h1 class="perfil-nombre">{{ p.nombre }}</h1>
-                <p class="perfil-rubro">{{ p.rubro.nombre }}</p>
-                {% if p.ciudad %}
-                    <p class="perfil-ciudad">📍 {{ p.ciudad }}</p>
-                {% endif %}
-                {% if p.atiende_urgencias %}
-                    <span class="perfil-urgencia-badge">⚡ Atiende urgencias</span>
-                {% endif %}
-                <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
-                   class="btn-ws" style="width: 100%; text-align: center; margin-top: 8px;" target="_blank">
-                    💬 Contactar por WhatsApp
-                </a>
-            </div>
-            <div class="perfil-col-der">
-                {% if p.descripcion %}
-                <div class="perfil-seccion">
-                    <h2 class="perfil-seccion-titulo">Sobre el profesional</h2>
-                    <div class="perfil-descripcion">{{ p.descripcion|linebreaks }}</div>
-                </div>
-                {% endif %}
-                <div class="perfil-seccion">
-                    <h2 class="perfil-seccion-titulo">Información</h2>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                        <div>
-                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Rubro</p>
-                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.rubro.nombre }}</p>
-                        </div>
-                        {% if p.ciudad %}
-                        <div>
-                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Zona</p>
-                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.ciudad }}</p>
-                        </div>
+<main class="perfil-main">
+    <div class="perfil-volver">
+        <a href="{% url 'rubro_detalle' p.rubro.slug %}" class="perfil-volver-link">← Volver a {{ p.rubro.nombre }}</a>
+    </div>
+    <div class="perfil-wrapper">
+        <div class="perfil-col-izq">
+            {% if p.foto %}
+                <img src="{{ p.foto.url }}" alt="{{ p.nombre }}" class="perfil-foto">
+            {% else %}
+                <div class="perfil-foto-placeholder">{{ p.rubro.icono }}</div>
+            {% endif %}
+            <h1 class="perfil-nombre">{{ p.nombre }}</h1>
+            <p class="perfil-rubro">{{ p.rubro.nombre }}</p>
+            {% if p.ciudad %}
+                <p class="perfil-ciudad">📍 {{ p.ciudad }}</p>
+            {% endif %}
+
+            {% with promedio=p.promedio_estrellas cantidad=p.cantidad_resenas %}
+            {% if promedio %}
+            <div class="perfil-estrellas-resumen">
+                <div class="estrellas-display">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= promedio %}
+                            <span class="estrella llena">★</span>
+                        {% else %}
+                            <span class="estrella vacia">★</span>
                         {% endif %}
-                        <div>
-                            <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Urgencias</p>
-                            <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{% if p.atiende_urgencias %}⚡ Sí{% else %}No{% endif %}</p>
-                        </div>
+                    {% endfor %}
+                </div>
+                <span class="estrellas-texto">{{ promedio }} ({{ cantidad }} opinión{% if cantidad != 1 %}es{% endif %})</span>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% if p.atiende_urgencias %}
+                <span class="perfil-urgencia-badge">⚡ Atiende urgencias</span>
+            {% endif %}
+            <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
+               class="btn-ws" style="width: 100%; text-align: center; margin-top: 8px;" target="_blank">
+                💬 Contactar por WhatsApp
+            </a>
+        </div>
+
+        <div class="perfil-col-der">
+            {% if p.descripcion %}
+            <div class="perfil-seccion">
+                <h2 class="perfil-seccion-titulo">Sobre el profesional</h2>
+                <div class="perfil-descripcion">{{ p.descripcion|linebreaks }}</div>
+            </div>
+            {% endif %}
+
+            <div class="perfil-seccion">
+                <h2 class="perfil-seccion-titulo">Información</h2>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                        <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Rubro</p>
+                        <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.rubro.nombre }}</p>
+                    </div>
+                    {% if p.ciudad %}
+                    <div>
+                        <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Zona</p>
+                        <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.ciudad }}</p>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Urgencias</p>
+                        <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{% if p.atiende_urgencias %}⚡ Sí{% else %}No{% endif %}</p>
                     </div>
                 </div>
-                <div class="perfil-cta-final">
-                    <p>¿Querés contratar a {{ p.nombre }}?</p>
-                    <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
-                       class="btn-ws" style="display: inline-block; padding: 14px 40px;" target="_blank">
-                        💬 Escribir por WhatsApp
-                    </a>
+            </div>
+
+            <!-- SECCIÓN OPINIONES -->
+            <div class="perfil-seccion">
+                <h2 class="perfil-seccion-titulo">Opiniones</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="resena-mensaje-ok">✅ {{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if resenas %}
+                    <div class="resenas-lista">
+                        {% for r in resenas %}
+                        <div class="resena-card">
+                            <div class="resena-header">
+                                <span class="resena-autor">{{ r.nombre_autor }}</span>
+                                <div class="estrellas-display estrellas-sm">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= r.estrellas %}
+                                            <span class="estrella llena">★</span>
+                                        {% else %}
+                                            <span class="estrella vacia">★</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="resena-fecha">{{ r.fecha|date:"d/m/Y" }}</span>
+                            </div>
+                            <p class="resena-comentario">{{ r.comentario }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="resenas-vacio">Todavía no hay opiniones. ¡Sé el primero en dejar la tuya!</p>
+                {% endif %}
+
+                <!-- FORMULARIO -->
+                <div class="resena-form-wrapper">
+                    <h3 class="resena-form-titulo">Dejá tu opinión</h3>
+
+                    {% if errores %}
+                        <ul class="resena-errores">
+                            {% for e in errores %}<li>{{ e }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <form method="post" class="resena-form">
+                        {% csrf_token %}
+
+                        <div class="resena-form-fila">
+                            <div class="resena-form-grupo">
+                                <label for="nombre_autor">Tu nombre *</label>
+                                <input type="text" id="nombre_autor" name="nombre_autor"
+                                       value="{{ form_data.nombre_autor|default:'' }}"
+                                       placeholder="Ej: María García" required>
+                            </div>
+                            <div class="resena-form-grupo">
+                                <label for="email_autor">Tu email * <span class="resena-email-nota">(no se mostrará)</span></label>
+                                <input type="email" id="email_autor" name="email_autor"
+                                       value="{{ form_data.email_autor|default:'' }}"
+                                       placeholder="tucorreo@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="resena-form-grupo">
+                            <label>Puntuación *</label>
+                            <div class="estrellas-selector" id="estrellas-selector">
+                                {% for i in "12345" %}
+                                <span class="estrella-opcion" data-valor="{{ forloop.counter }}">★</span>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="estrellas" id="estrellas-input"
+                                   value="{{ form_data.estrellas|default:'' }}">
+                        </div>
+
+                        <div class="resena-form-grupo">
+                            <label for="comentario">Tu opinión *</label>
+                            <textarea id="comentario" name="comentario" rows="4"
+                                      placeholder="Contá tu experiencia con {{ p.nombre }}...">{{ form_data.comentario|default:'' }}</textarea>
+                        </div>
+
+                        <button type="submit" class="btn-resena-submit">Enviar opinión</button>
+                    </form>
                 </div>
             </div>
+            <!-- FIN OPINIONES -->
+
+            <div class="perfil-cta-final">
+                <p>¿Querés contratar a {{ p.nombre }}?</p>
+                <a href="https://wa.me/{{ p.whatsapp }}?text=Hola%20{{ p.nombre }},%20te%20contacto%20desde%20Servicios%20Bah%C3%ADa!"
+                   class="btn-ws" style="display: inline-block; padding: 14px 40px;" target="_blank">
+                    💬 Escribir por WhatsApp
+                </a>
+            </div>
         </div>
-    </main>
+    </div>
+</main>
+
+<style>
+/* ── Estrellas resumen (col izquierda) ── */
+.perfil-estrellas-resumen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin: 8px 0 12px;
+}
+.estrellas-display {
+    display: flex;
+    gap: 2px;
+}
+.estrella.llena { color: #f5a623; font-size: 1.3rem; }
+.estrella.vacia { color: #ddd; font-size: 1.3rem; }
+.estrellas-texto {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* ── Lista de reseñas ── */
+.resenas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+.resena-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+.resena-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+.resena-autor {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #222;
+}
+.estrellas-sm .estrella.llena { font-size: 1rem; }
+.estrellas-sm .estrella.vacia { font-size: 1rem; }
+.resena-fecha {
+    font-size: 0.78rem;
+    color: #aaa;
+    margin-left: auto;
+}
+.resena-comentario {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.5;
+    margin: 0;
+}
+.resenas-vacio {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 24px;
+}
+.resena-mensaje-ok {
+    background: #e6f9ee;
+    border: 1px solid #b2dfcc;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #2d7a4f;
+    margin-bottom: 16px;
+}
+
+/* ── Formulario ── */
+.resena-form-wrapper {
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 8px;
+}
+.resena-form-titulo {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #222;
+    margin: 0 0 16px;
+}
+.resena-errores {
+    background: #fff0f0;
+    border: 1px solid #f5c6c6;
+    border-radius: 8px;
+    padding: 10px 14px 10px 28px;
+    font-size: 0.88rem;
+    color: #c0392b;
+    margin-bottom: 14px;
+}
+.resena-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.resena-form-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 500px) {
+    .resena-form-fila { grid-template-columns: 1fr; }
+}
+.resena-form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.resena-form-grupo label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.resena-email-nota {
+    font-weight: 400;
+    text-transform: none;
+    color: #aaa;
+    font-size: 0.78rem;
+}
+.resena-form-grupo input,
+.resena-form-grupo textarea {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: #fff;
+    transition: border-color 0.2s;
+    resize: vertical;
+}
+.resena-form-grupo input:focus,
+.resena-form-grupo textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* ── Selector de estrellas interactivo ── */
+.estrellas-selector {
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+}
+.estrella-opcion {
+    font-size: 1.8rem;
+    color: #ddd;
+    transition: color 0.15s, transform 0.1s;
+    user-select: none;
+}
+.estrella-opcion:hover,
+.estrella-opcion.seleccionada {
+    color: #f5a623;
+}
+.estrella-opcion:hover {
+    transform: scale(1.15);
+}
+
+.btn-resena-submit {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.2s;
+}
+.btn-resena-submit:hover {
+    background: #2563eb;
+}
+</style>
+
+<script>
+// Selector de estrellas interactivo
+const opciones = document.querySelectorAll('.estrella-opcion');
+const inputEstrellas = document.getElementById('estrellas-input');
+
+// Restaurar valor si hubo error de validación
+const valorActual = inputEstrellas.value;
+if (valorActual) {
+    opciones.forEach(op => {
+        if (parseInt(op.dataset.valor) <= parseInt(valorActual)) {
+            op.classList.add('seleccionada');
+        }
+    });
+}
+
+opciones.forEach(op => {
+    op.addEventListener('mouseover', () => {
+        opciones.forEach(o => o.classList.remove('hover-active'));
+        const val = parseInt(op.dataset.valor);
+        opciones.forEach(o => {
+            if (parseInt(o.dataset.valor) <= val) o.style.color = '#f5a623';
+            else o.style.color = '#ddd';
+        });
+    });
+    op.addEventListener('mouseleave', () => {
+        const sel = inputEstrellas.value;
+        opciones.forEach(o => {
+            if (sel && parseInt(o.dataset.valor) <= parseInt(sel)) o.style.color = '#f5a623';
+            else o.style.color = '#ddd';
+        });
+    });
+    op.addEventListener('click', () => {
+        const val = op.dataset.valor;
+        inputEstrellas.value = val;
+        opciones.forEach(o => {
+            o.classList.toggle('seleccionada', parseInt(o.dataset.valor) <= parseInt(val));
+        });
+    });
+});
+</script>
 
 {% endblock %}

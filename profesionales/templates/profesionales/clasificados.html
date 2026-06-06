@@ -378,15 +378,14 @@
     {% for aviso in avisos %}
     {% with primera_foto=aviso.fotos.first %}
     <div class="aviso-card"
-         onclick="abrirModal(
-            '{{ aviso.titulo|escapejs }}',
-            '{{ aviso.categoria.nombre|escapejs }}',
-            '{{ aviso.precio|escapejs }}',
-            '{{ aviso.descripcion|escapejs }}',
-            '{{ aviso.ciudad|escapejs }}',
-            '{{ aviso.whatsapp }}',
-            [{% for f in aviso.fotos.all %}'{{ f.imagen.url }}'{% if not forloop.last %},{% endif %}{% endfor %}]
-         )">
+         data-titulo="{{ aviso.titulo|escapejs }}"
+         data-categoria="{{ aviso.categoria.nombre|escapejs }}"
+         data-precio="{{ aviso.precio|escapejs }}"
+         data-descripcion="{{ aviso.descripcion|escapejs }}"
+         data-ciudad="{{ aviso.ciudad|escapejs }}"
+         data-whatsapp="{{ aviso.whatsapp }}"
+         data-fotos="[{% for f in aviso.fotos.all %}&quot;{{ f.imagen.url }}&quot;{% if not forloop.last %},{% endif %}{% endfor %}]"
+         onclick="abrirModalDesdeCard(this)">
         <div class="aviso-card-img">
             {% if primera_foto %}
                 <img src="{{ primera_foto.imagen.url }}" alt="{{ aviso.titulo }}">
@@ -461,6 +460,20 @@ let fotosActuales = [];
 let fotoIndex = 0;
 let fotosLightbox = [];
 let lbIndex = 0;
+
+function abrirModalDesdeCard(el) {
+    const fotosRaw = el.dataset.fotos;
+    const fotos = fotosRaw && fotosRaw !== '[]' ? JSON.parse(fotosRaw) : [];
+    abrirModal(
+        el.dataset.titulo,
+        el.dataset.categoria,
+        el.dataset.precio,
+        el.dataset.descripcion,
+        el.dataset.ciudad,
+        el.dataset.whatsapp,
+        fotos
+    );
+}
 
 function abrirModal(titulo, cat, precio, desc, ciudad, wa, fotos) {
     document.getElementById('modal-titulo').textContent = titulo;

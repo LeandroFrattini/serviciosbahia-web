@@ -10,6 +10,7 @@ urlpatterns = [
     path('unete/', views.unete, name='unete'),
     path('clasificados/', views.clasificados, name='clasificados'),
     path('<slug:slug>/perfil/<slug:perfil_slug>/', views.perfil, name='perfil'),
+    path('<slug:slug>/perfil/<slug:perfil_slug>/resena/', views.perfil, name='resena'),
     path('<slug:slug>/', views.rubro_detalle, name='rubro_detalle'),
 ]
 

@@ -14,6 +14,13 @@ body {
     background: #F7F9FC;
     color: #4A5568;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    flex: 1;
 }
 
 a {
@@ -41,6 +48,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     height: 65px;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -86,6 +94,89 @@ nav {
 .btn-unete-nav:hover {
     background: #e09515 !important;
     color: #1B3A5C !important;
+}
+
+/* Hamburger */
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+/* Animación X al abrir */
+.nav-hamburger-open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.nav-hamburger-open span:nth-child(2) {
+    opacity: 0;
+}
+.nav-hamburger-open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    .nav-hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px 0 16px;
+    }
+
+    .nav-links.nav-open {
+        display: flex;
+    }
+
+    .nav-links li {
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 13px 8px;
+        font-size: 1rem;
+    }
+
+    .btn-unete-nav {
+        margin: 6px 0 0;
+        border-radius: 8px;
+        text-align: center;
+        padding: 12px 8px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        height: auto;
+        min-height: 65px;
+        padding: 0 0 0;
+        background: #1B3A5C;
+    }
+
+    .nav-links {
+        background: #1B3A5C;
+        padding-bottom: 16px;
+    }
 }
 
 /* =============================================
@@ -152,7 +243,6 @@ footer {
     text-align: center;
     padding: 25px 20px;
     font-size: 0.88rem;
-    margin-top: 60px;
 }
 
 /* =============================================
@@ -548,6 +638,7 @@ footer {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 12px;
     border: 2px solid transparent;
 }
@@ -609,16 +700,23 @@ footer {
     font-weight: 600;
 }
 
-.pro-card-tag-urgencia {
-    background: #FFF3E0;
-    color: #7a4e00;
-}
-
 .pro-card-btns {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-top: auto;
+}
+
+.pro-card-estrellas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.pro-card-estrellas-texto {
+    font-size: 0.78rem;
+    color: #888;
 }
 
 .btn-ver-perfil {
@@ -636,6 +734,23 @@ footer {
 .btn-ver-perfil:hover {
     background: #1B3A5C;
     color: white;
+}
+
+.btn-ws {
+    display: block;
+    text-align: center;
+    background: #25D366;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.btn-ws:hover {
+    background: #1fb855;
+    transform: translateY(-2px);
 }
 
 /* EMPTY STATE */

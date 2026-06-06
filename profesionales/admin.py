@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Rubro, Profesional, CategoriaAviso, Aviso, FotoAviso
+from .models import Rubro, Profesional, Resena, CategoriaAviso, Aviso, FotoAviso
 
 @admin.register(Rubro)
 class RubroAdmin(admin.ModelAdmin):
@@ -12,6 +12,15 @@ class ProfesionalAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'rubro', 'ciudad', 'atiende_urgencias']
     list_filter = ['rubro', 'atiende_urgencias']
     prepopulated_fields = {'slug': ('nombre',)}
+
+@admin.register(Resena)
+class ResenaAdmin(admin.ModelAdmin):
+    list_display = ('nombre_autor', 'profesional', 'estrellas', 'fecha', 'aprobada')
+    list_filter = ('aprobada', 'estrellas', 'profesional')
+    list_editable = ('aprobada',)
+    search_fields = ('nombre_autor', 'email_autor', 'comentario')
+    readonly_fields = ('nombre_autor', 'email_autor', 'estrellas', 'comentario', 'fecha', 'profesional')
+    ordering = ('-fecha',)
 
 @admin.register(CategoriaAviso)
 class CategoriaAvisoAdmin(admin.ModelAdmin):

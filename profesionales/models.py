@@ -53,9 +53,40 @@ class Profesional(models.Model):
     def __str__(self):
         return f"{self.nombre} - {self.rubro}"
 
+    def promedio_estrellas(self):
+        resenas = self.resenas.filter(aprobada=True)
+        if not resenas.exists():
+            return None
+        total = sum(r.estrellas for r in resenas)
+        return round(total / resenas.count(), 1)
+
+    def cantidad_resenas(self):
+        return self.resenas.filter(aprobada=True).count()
+
     class Meta:
         verbose_name_plural = "Profesionales"
         ordering = ['nombre']
+
+
+class Resena(models.Model):
+    ESTRELLAS_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE, related_name='resenas')
+    nombre_autor = models.CharField(max_length=100, verbose_name="Tu nombre")
+    email_autor = models.EmailField(verbose_name="Tu email (no se mostrará públicamente)")
+    estrellas = models.IntegerField(choices=ESTRELLAS_CHOICES, verbose_name="Puntuación")
+    comentario = models.TextField(verbose_name="Tu opinión")
+    fecha = models.DateTimeField(auto_now_add=True)
+    aprobada = models.BooleanField(default=False, verbose_name="Aprobada")
+
+    def __str__(self):
+        return f"{self.nombre_autor} → {self.profesional.nombre} ({self.estrellas}★)"
+
+    class Meta:
+        verbose_name = "Reseña"
+        verbose_name_plural = "Reseñas"
+        ordering = ['-fecha']
+
 
 class CategoriaAviso(models.Model):
     nombre = models.CharField(max_length=100)
@@ -93,6 +124,7 @@ class Aviso(models.Model):
         verbose_name = "Aviso"
         verbose_name_plural = "Avisos"
         ordering = ['-fecha_desde']
+
 
 class FotoAviso(models.Model):
     aviso = models.ForeignKey(Aviso, on_delete=models.CASCADE, related_name='fotos')
