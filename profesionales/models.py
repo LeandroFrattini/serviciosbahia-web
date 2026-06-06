@@ -136,3 +136,8 @@ class FotoAviso(models.Model):
     class Meta:
         verbose_name = "Foto de aviso"
         verbose_name_plural = "Fotos de aviso"
+
+def promedio_estrellas(self):
+    result = self.resenas.filter(aprobada=True).aggregate(Avg('estrellas'))
+    val = result['estrellas__avg']
+    return round(val, 1) if val else None

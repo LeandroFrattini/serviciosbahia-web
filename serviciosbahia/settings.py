@@ -4,7 +4,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'serviciosbahia-dev-key-cambiar-en-produccion'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-solo-para-desarrollo-local')
 
 DEBUG = 'RENDER' not in os.environ
 
