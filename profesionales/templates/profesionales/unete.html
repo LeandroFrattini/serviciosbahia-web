@@ -1,62 +1,201 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}Sumate como profesional | Servicios Bahía{% endblock %}
-{% block meta_description %}Sumá tu perfil a Servicios Bahía y conseguí clientes en Bahía Blanca.{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Sumate como prestador | Servicios Bahia{% endblock %}
 
 {% block content %}
+<div class="container" style="max-width:700px; margin:2rem auto; padding:0 1rem;">
 
-    <section class="unete-hero">
-        <div class="unete-hero-inner">
-            <span class="unete-badge">Para profesionales</span>
-            <h1>Conseguí clientes<br>en tu zona</h1>
-            <p>Sumarte a Servicios Bahía es simple, sin exclusividad y vos manejás tus precios y horarios.</p>
-            <a href="https://forms.gle/TUFORMULARIOACA" target="_blank" class="btn-primary">Quiero sumarme →</a>
-        </div>
-    </section>
+  <h1 style="margin-bottom:.5rem;">Publica tu perfil profesional</h1>
+  <p style="color:#666; margin-bottom:2rem;">Miles de vecinos de Bahia Blanca buscan profesionales como vos. Elegis el plan, pagas una vez y apareces al instante.</p>
 
-    <section class="unete-beneficios">
-        <h2 class="home-section-title">¿Qué ganás sumándote?</h2>
-        <div class="unete-grid">
-            <div class="unete-card">
-                <span>📣</span>
-                <h4>Visibilidad local</h4>
-                <p>Tu perfil aparece frente a vecinos de Bahía Blanca que ya están buscando tu servicio.</p>
-            </div>
-            <div class="unete-card">
-                <span>💬</span>
-                <h4>Contacto directo</h4>
-                <p>Los clientes te escriben directo por WhatsApp. Sin intermediarios ni comisiones.</p>
-            </div>
-            <div class="unete-card">
-                <span>💰</span>
-                <h4>Vos fijás tus precios</h4>
-                <p>Servicios Bahía no interviene en tus tarifas. Los acordás directamente con el cliente.</p>
-            </div>
-            <div class="unete-card">
-                <span>🗓️</span>
-                <h4>Sin exclusividad</h4>
-                <p>Podés trabajar con otros canales. Somos un ingreso más para vos, no una atadura.</p>
-            </div>
-            <div class="unete-card">
-                <span>⚡</span>
-                <h4>Urgencias destacadas</h4>
-                <p>Si atendés urgencias, tu perfil aparece destacado para quienes necesitan ayuda inmediata.</p>
-            </div>
-            <div class="unete-card">
-                <span>🔓</span>
-                <h4>Cancelás cuando querés</h4>
-                <p>Sin contratos largos. Si querés darte de baja, lo resolvemos por WhatsApp ese mismo día.</p>
-            </div>
-        </div>
-    </section>
+  <!-- PLANES -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem;">
 
-    <section class="unete-cta">
-        <div class="unete-cta-inner">
-            <h2>¿Listo para sumar clientes?</h2>
-            <p>Completá el formulario y nos contactamos en menos de 24hs.</p>
-            <a href="https://forms.gle/TUFORMULARIOACA" target="_blank" class="btn-secondary">Completar formulario →</a>
-        </div>
-    </section>
+    <div class="plan-card" id="plan-1">
+      <div class="plan-icono">1️⃣</div>
+      <div class="plan-nombre">1 rubro</div>
+      <div class="plan-precio">$7.500<span>/mes</span></div>
+      <ul class="plan-features">
+        <li>Apareces en 1 categoria</li>
+        <li>Perfil con foto y WhatsApp</li>
+        <li>Resenas de clientes</li>
+      </ul>
+    </div>
 
+    <div class="plan-card plan-popular" id="plan-2">
+      <div class="plan-badge">MAS ELEGIDO</div>
+      <div class="plan-icono">2️⃣</div>
+      <div class="plan-nombre">2 rubros</div>
+      <div class="plan-precio">$10.000<span>/mes</span></div>
+      <ul class="plan-features">
+        <li>Apareces en 2 categorias</li>
+        <li>Perfil con foto y WhatsApp</li>
+        <li>Resenas de clientes</li>
+      </ul>
+    </div>
+
+    <div class="plan-card" id="plan-mas">
+      <div class="plan-icono">⭐</div>
+      <div class="plan-nombre">3+ rubros</div>
+      <div class="plan-precio">$15.000<span>/mes</span></div>
+      <ul class="plan-features">
+        <li>Apareces en todos los rubros que quieras</li>
+        <li>Perfil con foto y WhatsApp</li>
+        <li>Resenas de clientes</li>
+      </ul>
+    </div>
+
+  </div>
+
+  {% if errores %}
+  <div class="alert-error" style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:1rem;margin-bottom:1.5rem;">
+    {% for e in errores %}<p style="margin:.2rem 0;color:#b91c1c;">⚠ {{ e }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" id="form-unete">
+    {% csrf_token %}
+
+    <h2 style="margin-bottom:1rem;">Tus datos</h2>
+
+    <div class="form-group">
+      <label>Nombre completo o razon social *</label>
+      <input type="text" name="nombre" value="{{ form_data.nombre|default:'' }}" required placeholder="Ej: Juan Perez — Electricidad">
+    </div>
+
+    <div class="form-group">
+      <label>Numero de WhatsApp * <small>(sin espacios, ej: 2914123456)</small></label>
+      <input type="tel" name="whatsapp" value="{{ form_data.whatsapp|default:'' }}" required placeholder="2914123456">
+    </div>
+
+    <div class="form-group">
+      <label>Email de contacto * <small>(solo para notificaciones, no se publica)</small></label>
+      <input type="email" name="email_contacto" value="{{ form_data.email_contacto|default:'' }}" required>
+    </div>
+
+    <div class="form-group">
+      <label>Ciudad / Barrio</label>
+      <input type="text" name="ciudad" value="{{ form_data.ciudad|default:'' }}" placeholder="Ej: Bahia Blanca, Villa Mitre">
+    </div>
+
+    <div class="form-group">
+      <label>Zona de atencion</label>
+      <select name="zona">
+        <option value="">-- Toda la ciudad --</option>
+        {% for zona in zonas %}
+        <option value="{{ zona.pk }}" {% if form_data.zona == zona.pk|stringformat:"s" %}selected{% endif %}>{{ zona.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Descripcion breve <small>(que hacen, cuanto experiencia, etc.)</small></label>
+      <textarea name="descripcion" rows="3" placeholder="Contale a tus futuros clientes quien sos y que ofreces...">{{ form_data.descripcion|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Foto de perfil <small>(opcional, JPG o PNG)</small></label>
+      <input type="file" name="foto" accept="image/*">
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="atiende_urgencias" {% if form_data.atiende_urgencias %}checked{% endif %}>
+        Atiendo urgencias / guardia
+      </label>
+    </div>
+
+    <!-- RUBROS -->
+    <h2 style="margin:1.5rem 0 .5rem;">Rubros <small id="precio-rubros-label" style="color:#6366f1;font-weight:600;"></small></h2>
+    <p style="color:#666;margin-bottom:1rem;font-size:.9rem;">
+      Selecciona los rubros en que queres aparecer. El precio se calcula automaticamente:
+      <strong>1 rubro $7.500</strong> · <strong>2 rubros $10.000</strong> · <strong>3 o mas $15.000</strong>
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:.5rem; margin-bottom:1.5rem;">
+      {% for rubro in rubros %}
+      <label class="rubro-check">
+        <input type="checkbox" name="rubros" value="{{ rubro.pk }}"
+          {% if rubro.pk|stringformat:"s" in form_data.getlist.rubros %}checked{% endif %}>
+        {{ rubro.icono }} {{ rubro.nombre }}
+      </label>
+      {% endfor %}
+    </div>
+    <div id="precio-resumen" style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;padding:1rem;margin-bottom:1.5rem;display:none;">
+      <strong>Total a pagar: <span id="precio-total-text"></span>/mes</strong>
+    </div>
+
+    <!-- METODO DE PAGO -->
+    <h2 style="margin-bottom:1rem;">Metodo de pago</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+      <label class="metodo-card" id="card-mp">
+        <input type="radio" name="metodo_pago" value="mercadopago" checked>
+        <span class="metodo-icono">💳</span>
+        <strong>MercadoPago</strong>
+        <small>Debito automatico mensual. Se activa al instante.</small>
+      </label>
+      <label class="metodo-card" id="card-transfer">
+        <input type="radio" name="metodo_pago" value="transferencia">
+        <span class="metodo-icono">🏦</span>
+        <strong>Transferencia</strong>
+        <small>Transferis al CBU y tu perfil se activa en menos de 24 hs.</small>
+      </label>
+    </div>
+
+    <button type="submit" class="btn-primary" style="width:100%;font-size:1.1rem;padding:.9rem;">
+      Continuar al pago →
+    </button>
+    <p style="text-align:center;color:#999;font-size:.8rem;margin-top:.75rem;">
+      Podes cancelar la suscripcion cuando quieras. Sin permanencia.
+    </p>
+  </form>
+
+</div>
+
+<style>
+.plan-card{border:2px solid #e5e7eb;border-radius:12px;padding:1.25rem;text-align:center;position:relative;}
+.plan-card.plan-popular{border-color:#6366f1;background:#f5f3ff;}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#6366f1;color:#fff;font-size:.7rem;font-weight:700;padding:.25rem .75rem;border-radius:99px;}
+.plan-icono{font-size:2rem;margin-bottom:.5rem;}
+.plan-nombre{font-weight:700;font-size:1.1rem;}
+.plan-precio{font-size:1.6rem;font-weight:800;color:#6366f1;margin:.25rem 0;}
+.plan-precio span{font-size:.9rem;font-weight:400;color:#666;}
+.plan-features{list-style:none;padding:0;margin:.75rem 0 0;text-align:left;font-size:.85rem;color:#555;}
+.plan-features li::before{content:"✓ ";}
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-weight:600;margin-bottom:.4rem;}
+.form-group input[type=text],.form-group input[type=tel],.form-group input[type=email],.form-group textarea,.form-group select{width:100%;padding:.6rem .8rem;border:1px solid #d1d5db;border-radius:6px;font-size:1rem;box-sizing:border-box;}
+.rubro-check{display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:.9rem;}
+.rubro-check:hover{background:#f9fafb;}
+.rubro-check input{margin:0;}
+.metodo-card{display:flex;flex-direction:column;align-items:center;gap:.3rem;border:2px solid #e5e7eb;border-radius:10px;padding:1rem;cursor:pointer;text-align:center;}
+.metodo-card:has(input:checked){border-color:#6366f1;background:#f5f3ff;}
+.metodo-icono{font-size:1.5rem;}
+.btn-primary{background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
+.btn-primary:hover{background:#4f46e5;}
+</style>
+
+<script>
+const PRECIOS = {1: 7500, 2: 10000};
+function calcularPrecio(n){ return n===1?7500:n===2?10000:15000; }
+function formatARS(n){ return '$'+n.toLocaleString('es-AR'); }
+
+document.querySelectorAll('input[name="rubros"]').forEach(cb => {
+  cb.addEventListener('change', actualizarPrecio);
+});
+
+function actualizarPrecio(){
+  const seleccionados = document.querySelectorAll('input[name="rubros"]:checked').length;
+  const label = document.getElementById('precio-rubros-label');
+  const resumen = document.getElementById('precio-resumen');
+  const totalText = document.getElementById('precio-total-text');
+  if(seleccionados === 0){
+    label.textContent = '';
+    resumen.style.display = 'none';
+  } else {
+    const precio = calcularPrecio(seleccionados);
+    label.textContent = '— ' + formatARS(precio) + '/mes';
+    totalText.textContent = formatARS(precio);
+    resumen.style.display = 'block';
+  }
+}
+</script>
 {% endblock %}

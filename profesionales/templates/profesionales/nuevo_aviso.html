@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block title %}Publicar aviso | Servicios Bahia{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:680px;margin:2rem auto;padding:0 1rem;">
+
+  <h1 style="margin-bottom:.5rem;">Publicar un aviso clasificado</h1>
+  <p style="color:#666;margin-bottom:.5rem;">
+    Llega a miles de personas en Bahia Blanca. <strong>${{ precio_semana|floatformat:0 }} por semana</strong> — el precio se calcula automaticamente segun la duracion que elijas.
+  </p>
+  <div style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;padding:.75rem 1rem;margin-bottom:2rem;font-size:.9rem;">
+    💡 <strong>Ejemplo:</strong> queres publicar tu auto por 3 semanas → 3 × ${{ precio_semana|floatformat:0 }} = <strong>${% widthratio precio_semana 1 3 %}</strong>
+  </div>
+
+  {% if errores %}
+  <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:1rem;margin-bottom:1.5rem;">
+    {% for e in errores %}<p style="margin:.2rem 0;color:#b91c1c;">⚠ {{ e }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" id="form-aviso">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label>Categoria *</label>
+      <select name="categoria" required>
+        <option value="">-- Selecciona una categoria --</option>
+        {% for cat in categorias %}
+        <option value="{{ cat.pk }}" {% if form_data.categoria == cat.pk|stringformat:"s" %}selected{% endif %}>
+          {{ cat.icono }} {{ cat.nombre }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Titulo del aviso *</label>
+      <input type="text" name="titulo" value="{{ form_data.titulo|default:'' }}" required maxlength="200"
+        placeholder="Ej: Vendo Ford Focus 2018, Alquilo depto 2 amb., Busco empleada doméstica">
+    </div>
+
+    <div class="form-group">
+      <label>Descripcion</label>
+      <textarea name="descripcion" rows="4" placeholder="Detalles, estado, condiciones...">{{ form_data.descripcion|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Precio <small>(opcional, ej: $500.000 o "A convenir")</small></label>
+      <input type="text" name="precio" value="{{ form_data.precio|default:'' }}" placeholder="$500.000">
+    </div>
+
+    <div class="form-group">
+      <label>Ciudad / Barrio</label>
+      <input type="text" name="ciudad" value="{{ form_data.ciudad|default:'' }}" placeholder="Ej: Bahia Blanca, Ingeniero White">
+    </div>
+
+    <div class="form-group">
+      <label>Tu nombre *</label>
+      <input type="text" name="nombre_contacto" value="{{ form_data.nombre_contacto|default:'' }}" required placeholder="Nombre o empresa">
+    </div>
+
+    <div class="form-group">
+      <label>WhatsApp de contacto * <small>(sin espacios)</small></label>
+      <input type="tel" name="whatsapp" value="{{ form_data.whatsapp|default:'' }}" required placeholder="2914123456">
+    </div>
+
+    <div class="form-group">
+      <label>Email * <small>(para enviarte el comprobante de pago)</small></label>
+      <input type="email" name="email_contacto" value="{{ form_data.email_contacto|default:'' }}" required>
+    </div>
+
+    <!-- FOTOS -->
+    <h2 style="margin:1.5rem 0 .5rem;">Fotos <small style="font-weight:400;color:#666;">(opcional)</small></h2>
+    <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.9rem;">
+      📷 <strong>Limite de tamaño: 1 MB por foto.</strong> Si tu imagen es mas grande, comprimila en
+      <a href="https://squoosh.app" target="_blank">squoosh.app</a> (gratis) antes de subirla.
+    </div>
+
+    <div class="form-group">
+      <label>Foto principal</label>
+      <input type="file" name="foto" accept="image/*" id="foto-principal" onchange="validarFoto(this)">
+      <small id="error-foto" style="color:#b91c1c;display:none;"></small>
+    </div>
+
+    <div class="form-group">
+      <label>Fotos adicionales <small>(podes subir varias)</small></label>
+      <input type="file" name="fotos_extra" accept="image/*" multiple id="fotos-extra" onchange="validarFotos(this)">
+      <small id="error-fotos" style="color:#b91c1c;display:none;"></small>
+    </div>
+
+    <!-- DURACION -->
+    <h2 style="margin:1.5rem 0 .5rem;">Duracion de la publicacion</h2>
+    <p style="color:#666;font-size:.9rem;margin-bottom:1rem;">
+      Tu aviso aparece desde hoy. El precio es <strong>${{ precio_semana|floatformat:0 }} por semana</strong>.
+    </p>
+
+    <div class="form-group">
+      <label>Cantidad de semanas *</label>
+      <select name="semanas" id="select-semanas" required onchange="actualizarTotal()">
+        {% for i in "123456789" %}
+        <option value="{{ forloop.counter }}" {% if form_data.semanas == forloop.counter|stringformat:"s" %}selected{% endif %}>
+          {{ forloop.counter }} semana{% if forloop.counter > 1 %}s{% endif %}
+        </option>
+        {% endfor %}
+        <option value="10" {% if form_data.semanas == "10" %}selected{% endif %}>10 semanas</option>
+        <option value="11" {% if form_data.semanas == "11" %}selected{% endif %}>11 semanas</option>
+        <option value="12" {% if form_data.semanas == "12" %}selected{% endif %}>12 semanas</option>
+      </select>
+    </div>
+
+    <div id="total-aviso" style="background:#f0f4ff;border:2px solid #6366f1;border-radius:8px;padding:1rem;margin-bottom:1.5rem;text-align:center;">
+      <span style="font-size:1.4rem;font-weight:800;color:#6366f1;">Total: <span id="total-text">$2.500</span></span>
+      <br><small style="color:#666;">Pago unico — sin renovacion automatica</small>
+    </div>
+
+    <button type="submit" id="btn-submit" class="btn-primary" style="width:100%;font-size:1.1rem;padding:.9rem;">
+      Pagar con MercadoPago →
+    </button>
+    <p style="text-align:center;color:#999;font-size:.8rem;margin-top:.75rem;">
+      Al pagar, tu aviso se publica automaticamente. Acepta tarjetas, debito y efectivo.
+    </p>
+
+  </form>
+</div>
+
+<style>
+.form-group{margin-bottom:1.25rem;}
+.form-group label{display:block;font-weight:600;margin-bottom:.4rem;}
+.form-group input[type=text],.form-group input[type=tel],.form-group input[type=email],.form-group textarea,.form-group select{width:100%;padding:.6rem .8rem;border:1px solid #d1d5db;border-radius:6px;font-size:1rem;box-sizing:border-box;}
+.btn-primary{background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;}
+.btn-primary:hover{background:#4f46e5;}
+.btn-primary:disabled{background:#a5b4fc;cursor:not-allowed;}
+</style>
+
+<script>
+const PRECIO_SEMANA = {{ precio_semana }};
+function formatARS(n){ return '$'+n.toLocaleString('es-AR'); }
+
+function actualizarTotal(){
+  const semanas = parseInt(document.getElementById('select-semanas').value) || 1;
+  document.getElementById('total-text').textContent = formatARS(semanas * PRECIO_SEMANA);
+}
+
+const MAX_BYTES = 1 * 1024 * 1024;
+
+function validarFoto(input){
+  const err = document.getElementById('error-foto');
+  if(input.files[0] && input.files[0].size > MAX_BYTES){
+    err.textContent = 'La foto supera 1 MB (' + Math.round(input.files[0].size/1024) + ' KB). Comprimila antes de subir.';
+    err.style.display = 'block';
+    input.value = '';
+  } else {
+    err.style.display = 'none';
+  }
+}
+
+function validarFotos(input){
+  const err = document.getElementById('error-fotos');
+  const grandes = Array.from(input.files).filter(f => f.size > MAX_BYTES).map(f => f.name);
+  if(grandes.length > 0){
+    err.textContent = 'Estas fotos superan 1 MB: ' + grandes.join(', ') + '. Comprimilas primero.';
+    err.style.display = 'block';
+    input.value = '';
+  } else {
+    err.style.display = 'none';
+  }
+}
+
+// Bloquear doble submit
+document.getElementById('form-aviso').addEventListener('submit', function(){
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a MercadoPago...';
+});
+
+actualizarTotal();
+</script>
+{% endblock %}

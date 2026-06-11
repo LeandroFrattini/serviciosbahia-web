@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Datos para transferencia | Servicios Bahia{% endblock %}
+{% block content %}
+<div style="max-width:560px;margin:3rem auto;padding:0 1rem;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:1rem;">🏦</div>
+  <h1>Transferi y listo</h1>
+  <p style="color:#666;margin-bottom:2rem;">
+    Una vez que nos confirmes el pago, activamos tu perfil en menos de <strong>24 horas habiles</strong>.
+  </p>
+
+  <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:1.5rem;text-align:left;margin-bottom:2rem;">
+    <h2 style="margin-top:0;">Datos bancarios</h2>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="padding:.5rem 0;color:#666;">Titular</td><td><strong>{{ titular }}</strong></td></tr>
+      <tr><td style="padding:.5rem 0;color:#666;">CBU</td><td><strong>{{ cbu }}</strong></td></tr>
+      <tr><td style="padding:.5rem 0;color:#666;">Alias</td><td><strong>{{ alias }}</strong></td></tr>
+      <tr><td style="padding:.5rem 0;color:#666;">Importe</td><td><strong style="color:#6366f1;font-size:1.1rem;">${{ suscripcion.precio_mensual|floatformat:0 }}/mes</strong></td></tr>
+      <tr><td style="padding:.5rem 0;color:#666;">Plan</td><td>{{ suscripcion.get_plan_display }}</td></tr>
+      <tr><td style="padding:.5rem 0;color:#666;">Referencia</td><td><code>PROF-{{ profesional.pk }}</code></td></tr>
+    </table>
+  </div>
+
+  <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:1rem;margin-bottom:2rem;font-size:.9rem;text-align:left;">
+    <strong>Importante:</strong> pone <code>PROF-{{ profesional.pk }}</code> en el concepto de la transferencia para que podamos identificarte rapido.
+  </div>
+
+  <p style="color:#666;">¿Dudas? Escribinos a <strong>serviciosbahia.ok@gmail.com</strong></p>
+  <a href="{% url 'inicio' %}" style="color:#6366f1;">Volver al inicio</a>
+</div>
+{% endblock %}

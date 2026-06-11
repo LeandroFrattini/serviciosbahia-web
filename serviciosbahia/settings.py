@@ -111,3 +111,10 @@ TIME_ZONE = 'America/Argentina/Buenos_Aires'
 USE_I18N = True
 USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# ── MercadoPago ───────────────────────────────────────────────────────────────
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get('MERCADOPAGO_ACCESS_TOKEN', 'TEST-7938861232797174-061022-e5dbb5f45a74f5ba48b5e9e20a0d9fdb-529282922')
+
+# Datos para transferencias manuales (mostramos al usuario)
+MP_CBU = os.environ.get('MP_CBU', '')
+MP_ALIAS_CBU = os.environ.get('MP_ALIAS_CBU', '')
+MP_TITULAR = os.environ.get('MP_TITULAR', 'Servicios Bahia')

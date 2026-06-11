@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Pago pendiente | Servicios Bahia{% endblock %}
+{% block content %}
+<div style="max-width:520px;margin:3rem auto;padding:0 1rem;text-align:center;">
+  <div style="font-size:3rem;margin-bottom:1rem;">⏳</div>
+  <h1>Pago pendiente</h1>
+  <p style="color:#666;">Tu pago esta siendo procesado. En cuanto se acredite, tu aviso se publica automaticamente.</p>
+  <a href="{% url 'clasificados' %}" style="color:#6366f1;">Volver a clasificados</a>
+</div>
+{% endblock %}

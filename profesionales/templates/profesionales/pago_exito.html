@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Pago exitoso | Servicios Bahia{% endblock %}
+{% block content %}
+<div style="max-width:520px;margin:3rem auto;padding:0 1rem;text-align:center;">
+  {% if aprobado != False %}
+  <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
+  <h1>Pago confirmado</h1>
+  {% if tipo == 'clasificado' %}
+  <p style="color:#666;font-size:1.1rem;">Tu aviso <strong>{{ aviso.titulo }}</strong> ya esta publicado y visible para todos.</p>
+  <a href="{% url 'clasificados' %}" class="btn" style="display:inline-block;margin-top:1.5rem;background:#6366f1;color:#fff;padding:.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Ver clasificados</a>
+  {% else %}
+  <p style="color:#666;font-size:1.1rem;">Tu perfil <strong>{{ profesional.nombre }}</strong> esta activo. Ya apareces en el directorio.</p>
+  <a href="{% url 'inicio' %}" class="btn" style="display:inline-block;margin-top:1.5rem;background:#6366f1;color:#fff;padding:.75rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Ver directorio</a>
+  {% endif %}
+  {% else %}
+  <div style="font-size:4rem;margin-bottom:1rem;">⏳</div>
+  <h1>Pago en proceso</h1>
+  <p style="color:#666;">MercadoPago esta procesando tu pago. En cuanto se confirme, tu aviso se publica automaticamente. Recibiras un email de confirmacion.</p>
+  <a href="{% url 'clasificados' %}" style="color:#6366f1;">Volver a clasificados</a>
+  {% endif %}
+</div>
+{% endblock %}
