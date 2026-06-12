@@ -15,7 +15,8 @@ from django.views.decorators.http import require_POST
 from .models import (
     Aviso, CategoriaAviso, FotoAviso, Profesional, Resena, Rubro,
     Suscripcion, Zona, calcular_precio_profesional,
-    PRECIO_1_RUBRO, PRECIO_HASTA_3_RUBROS, PRECIO_PREMIUM, PRECIO_CLASIFICADO_SEMANA,
+    PRECIO_1_RUBRO, PRECIO_HASTA_3_RUBROS, PRECIO_PREMIUM,
+    PRECIO_2_RUBROS, PRECIO_MAS_RUBROS, PRECIO_CLASIFICADO_SEMANA,
 )
 
 logger = logging.getLogger(__name__)
@@ -116,10 +117,9 @@ def perfil(request, slug, perfil_slug):
 
 def unete(request):
     rubros = Rubro.objects.all()
-    zonas = Zona.objects.all()
     precios = {
         '1': PRECIO_1_RUBRO,
-        'hasta_3': PRECIO_HASTA_3_RUBROS,
+        'hasta3': PRECIO_HASTA_3_RUBROS,
         'premium': PRECIO_PREMIUM,
     }
 
@@ -131,9 +131,8 @@ def unete(request):
         email_contacto = request.POST.get('email_contacto', '').strip()
         rubros_ids = request.POST.getlist('rubros')
         atiende_urgencias = request.POST.get('atiende_urgencias') == 'on'
-        metodo_pago = request.POST.get('metodo_pago', 'mercadopago')
         es_premium = request.POST.get('plan_premium') == 'on'
-        zona_id = request.POST.get('zona')
+        metodo_pago = request.POST.get('metodo_pago', 'mercadopago')
         foto = request.FILES.get('foto')
 
         errores = []
@@ -149,7 +148,6 @@ def unete(request):
         if errores:
             return render(request, 'profesionales/unete.html', {
                 'rubros': rubros,
-                'zonas': zonas,
                 'precios': precios,
                 'errores': errores,
                 'form_data': request.POST,
@@ -173,13 +171,8 @@ def unete(request):
             ciudad=ciudad,
             atiende_urgencias=atiende_urgencias,
             activo=False,
-            destacado=es_premium,  # premium aparece destacado en búsquedas
+            destacado=es_premium,
         )
-        if zona_id:
-            try:
-                profesional.zona = Zona.objects.get(pk=zona_id)
-            except Zona.DoesNotExist:
-                pass
         if foto:
             profesional.foto = foto
         profesional.save()
@@ -201,7 +194,6 @@ def unete(request):
 
     return render(request, 'profesionales/unete.html', {
         'rubros': rubros,
-        'zonas': zonas,
         'precios': precios,
     })
 
@@ -220,7 +212,7 @@ def pago_transferencia_profesional(request, pk):
     })
 
 
-# ── PAGO PROFESIONAL — MERCADOPAGO SUSCRIPCION ───────────────────────────────
+# ── PAGO PROFESIONAL — MERCADOPAGO PREFERENCE ────────────────────────────────
 
 def pago_mp_profesional(request, pk):
     profesional = get_object_or_404(Profesional, pk=pk)
@@ -228,38 +220,55 @@ def pago_mp_profesional(request, pk):
 
     sdk = get_mp_sdk()
 
-    preapproval_data = {
-        "reason": f"Servicios Bahia — {suscripcion.get_plan_display()}",
-        "auto_recurring": {
-            "frequency": 1,
-            "frequency_type": "months",
-            "transaction_amount": suscripcion.precio_mensual,
+    preference_data = {
+        "items": [{
+            "title": f"ServiciosBahia — {suscripcion.get_plan_display()}",
+            "quantity": 1,
+            "unit_price": float(suscripcion.precio_mensual),
             "currency_id": "ARS",
+        }],
+        "payer": {"email": suscripcion.email_contacto},
+        "back_urls": {
+            "success": request.build_absolute_uri(f'/pago/profesional/{pk}/exito/'),
+            "failure": request.build_absolute_uri('/unete/'),
+            "pending": request.build_absolute_uri(f'/pago/profesional/{pk}/exito/'),
         },
-        "back_url": request.build_absolute_uri(f'/pago/profesional/{pk}/exito/'),
-        "payer_email": suscripcion.email_contacto,
-        "status": "pending",
+        "auto_return": "approved",
         "external_reference": f"prof_{profesional.pk}",
+        "notification_url": request.build_absolute_uri('/webhooks/mercadopago/'),
     }
 
-    response = sdk.preapproval().create(preapproval_data)
+    response = sdk.preference().create(preference_data)
     result = response.get("response", {})
 
     if response.get("status") == 201:
-        suscripcion.mp_subscription_id = result.get("id")
+        suscripcion.mp_preference_id = result.get("id")
         suscripcion.save()
         return redirect(result.get("init_point"))
     else:
-        logger.error("Error MP suscripcion: %s", result)
-        messages.error(request, "Hubo un error al iniciar el pago. Intenta de nuevo o usa transferencia.")
+        logger.error("Error MP preference profesional: %s", result)
+        messages.error(request, "Hubo un error al iniciar el pago. Intenta de nuevo o usá transferencia.")
         return redirect('unete')
 
 
 def pago_profesional_exito(request, pk):
     profesional = get_object_or_404(Profesional, pk=pk)
+    suscripcion = get_object_or_404(Suscripcion, profesional=profesional)
+    payment_id = request.GET.get('payment_id')
+    status = request.GET.get('status')
+
+    if status == 'approved' and payment_id:
+        suscripcion.estado = 'activo'
+        suscripcion.mp_payment_id = payment_id
+        suscripcion.fecha_aprobacion = timezone.now()
+        suscripcion.save()
+        profesional.activo = True
+        profesional.save()
+
     return render(request, 'profesionales/pago_exito.html', {
         'profesional': profesional,
         'tipo': 'profesional',
+        'aprobado': status == 'approved',
     })
 
 
@@ -375,7 +384,7 @@ def nuevo_aviso(request):
             "items": [{
                 "title": f"Clasificado: {titulo}",
                 "quantity": 1,
-                "unit_price": float(precio_total),
+                "unit_price": precio_total,
                 "currency_id": "ARS",
             }],
             "payer": {"email": email_contacto},
@@ -384,8 +393,9 @@ def nuevo_aviso(request):
                 "failure": request.build_absolute_uri(f'/clasificados/pago/fallo/{aviso.pk}/'),
                 "pending": request.build_absolute_uri(f'/clasificados/pago/pendiente/{aviso.pk}/'),
             },
+            "auto_return": "approved",
             "external_reference": f"aviso_{aviso.pk}",
-        
+            "notification_url": request.build_absolute_uri('/webhooks/mercadopago/'),
         }
 
         response = sdk.preference().create(preference_data)
@@ -396,12 +406,13 @@ def nuevo_aviso(request):
             aviso.save()
             return redirect(result.get("init_point"))
         else:
-            import json
-            error_detail = json.dumps(result, indent=2, ensure_ascii=False)
+            logger.error("Error MP preference: %s", result)
+            messages.error(request, "Error al iniciar el pago. Intenta de nuevo.")
+            aviso.delete()
             return render(request, 'profesionales/nuevo_aviso.html', {
                 'categorias': categorias,
                 'precio_semana': precio_semana,
-                'errores': [f"Error MP: {error_detail}"],
+                'errores': ["Error al conectar con MercadoPago. Intenta de nuevo."],
                 'form_data': request.POST,
             })
 
@@ -486,7 +497,7 @@ def webhook_mercadopago(request):
                     logger.warning("Suscripcion no encontrada para prof_%s", prof_id)
 
         elif topic == 'payment':
-            # Pago unico (clasificados)
+            # Pago unico (clasificados y profesionales)
             response = sdk.payment().get(resource_id)
             payment = response.get('response', {})
             status = payment.get('status')
@@ -502,6 +513,19 @@ def webhook_mercadopago(request):
                     aviso.save()
                 except Aviso.DoesNotExist:
                     logger.warning("Aviso no encontrado: %s", aviso_id)
+
+            elif external_ref.startswith('prof_') and status == 'approved':
+                prof_id = int(external_ref.replace('prof_', ''))
+                try:
+                    suscripcion = Suscripcion.objects.get(profesional_id=prof_id)
+                    suscripcion.estado = 'activo'
+                    suscripcion.mp_payment_id = str(resource_id)
+                    suscripcion.fecha_aprobacion = timezone.now()
+                    suscripcion.save()
+                    suscripcion.profesional.activo = True
+                    suscripcion.profesional.save()
+                except Suscripcion.DoesNotExist:
+                    logger.warning("Suscripcion no encontrada para prof_%s", prof_id)
 
     except Exception as e:
         logger.error("Error en webhook MP: %s", e)

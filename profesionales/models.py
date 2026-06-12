@@ -102,11 +102,9 @@ class Resena(models.Model):
 PRECIO_1_RUBRO = 7500
 PRECIO_HASTA_3_RUBROS = 12500
 PRECIO_PREMIUM = 20000
+PRECIO_2_RUBROS = PRECIO_HASTA_3_RUBROS    # alias backward-compat
+PRECIO_MAS_RUBROS = PRECIO_HASTA_3_RUBROS  # alias backward-compat
 PRECIO_CLASIFICADO_SEMANA = 2500
-
-# Aliases para compatibilidad
-PRECIO_2_RUBROS = PRECIO_HASTA_3_RUBROS
-PRECIO_MAS_RUBROS = PRECIO_HASTA_3_RUBROS
 
 
 def calcular_precio_profesional(cantidad_rubros, premium=False):
@@ -114,15 +112,17 @@ def calcular_precio_profesional(cantidad_rubros, premium=False):
         return PRECIO_PREMIUM
     if cantidad_rubros == 1:
         return PRECIO_1_RUBRO
-    else:
-        return PRECIO_HASTA_3_RUBROS
+    return PRECIO_HASTA_3_RUBROS
 
 
 class Suscripcion(models.Model):
     PLAN_CHOICES = [
         ('1_rubro', '1 rubro - $7.500/mes'),
         ('hasta_3_rubros', 'Hasta 3 rubros - $12.500/mes'),
-        ('premium', 'Premium - $20.000/mes (todos los rubros + Instagram)'),
+        ('premium', 'Premium - $20.000/mes'),
+        # legacy (por suscripciones existentes)
+        ('2_rubros', '2 rubros - $10.000/mes'),
+        ('mas_rubros', '3 o mas rubros - $15.000/mes'),
     ]
     METODO_CHOICES = [
         ('mercadopago', 'MercadoPago'),
@@ -141,6 +141,8 @@ class Suscripcion(models.Model):
     metodo_pago = models.CharField(max_length=20, choices=METODO_CHOICES)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     mp_subscription_id = models.CharField(max_length=200, blank=True, null=True)
+    mp_preference_id = models.CharField(max_length=200, blank=True, null=True)
+    mp_payment_id = models.CharField(max_length=200, blank=True, null=True)
     mp_payer_email = models.EmailField(blank=True, null=True)
     email_contacto = models.EmailField(blank=True)
     telefono_contacto = models.CharField(max_length=20, blank=True)
