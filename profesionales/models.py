@@ -17,6 +17,9 @@ class Rubro(models.Model):
     def __str__(self):
         return self.nombre
 
+    def activos_count(self):
+        return self.profesionales.filter(activo=True).count()
+
     class Meta:
         verbose_name_plural = "Rubros"
         ordering = ['nombre']

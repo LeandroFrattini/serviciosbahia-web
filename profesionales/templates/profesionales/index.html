@@ -73,7 +73,7 @@
             <a href="{% url 'rubro_detalle' rubro.slug %}" class="rubro-card">
                 <span class="rubro-icono">{{ rubro.icono }}</span>
                 <p class="rubro-nombre">{{ rubro.nombre }}</p>
-                <p class="rubro-count">{{ rubro.profesionales.count }} profesional{% if rubro.profesionales.count != 1 %}es{% endif %}</p>
+                <p class="rubro-count">{{ rubro.activos_count }} profesional{% if rubro.activos_count != 1 %}es{% endif %}</p>
             </a>
             {% empty %}
             <p style="grid-column: 1/-1; text-align:center; color:#888;">Próximamente...</p>
