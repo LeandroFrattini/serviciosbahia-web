@@ -13,7 +13,6 @@
     <table style="width:100%;border-collapse:collapse;">
       <tr><td style="padding:.5rem 0;color:#666;">Titular</td><td><strong>{{ titular }}</strong></td></tr>
       <tr><td style="padding:.5rem 0;color:#666;">CBU</td><td><strong>{{ cbu }}</strong></td></tr>
-      <tr><td style="padding:.5rem 0;color:#666;">Alias</td><td><strong>{{ alias }}</strong></td></tr>
       <tr><td style="padding:.5rem 0;color:#666;">Importe</td><td><strong style="color:#6366f1;font-size:1.1rem;">${{ suscripcion.precio_mensual|floatformat:0 }}/mes</strong></td></tr>
       <tr><td style="padding:.5rem 0;color:#666;">Plan</td><td>{{ suscripcion.get_plan_display }}</td></tr>
       <tr><td style="padding:.5rem 0;color:#666;">Referencia</td><td><code>PROF-{{ profesional.pk }}</code></td></tr>
