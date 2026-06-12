@@ -44,6 +44,19 @@
       </ul>
     </div>
 
+    <div class="plan-card plan-premium" id="plan-premium">
+      <div class="plan-badge plan-badge-premium">⚡ PREMIUM</div>
+      <div class="plan-icono">📲</div>
+      <div class="plan-nombre">Premium</div>
+      <div class="plan-precio">$20.000<span>/mes</span></div>
+      <ul class="plan-features">
+        <li>Todos los rubros que quieras</li>
+        <li>Apareces en nuestro Instagram</li>
+        <li>Mayor visibilidad garantizada</li>
+        <li>Perfil destacado en la web</li>
+      </ul>
+    </div>
+
   </div>
 
   {% if errores %}
@@ -141,6 +154,17 @@
       </label>
     </div>
 
+    <!-- PLAN PREMIUM -->
+    <div id="premium-addon" style="background:#fefce8;border:2px solid #f59e0b;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
+      <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;">
+        <input type="checkbox" name="plan_premium" id="plan_premium" style="width:20px;height:20px;margin-top:2px;accent-color:#f59e0b;">
+        <div>
+          <strong style="color:#92400e;font-size:1rem;">⚡ Agregar Plan Premium — $20.000/mes</strong>
+          <p style="color:#78350f;font-size:.85rem;margin:.3rem 0 0;">Además de todos los rubros, aparecés en nuestro feed de Instagram con tu perfil y contacto. Máxima visibilidad.</p>
+        </div>
+      </label>
+    </div>
+
     <button type="submit" class="btn-primary" style="width:100%;font-size:1.1rem;padding:.9rem;">
       Continuar al pago →
     </button>
@@ -153,6 +177,8 @@
 
 <style>
 .plan-card{border:2px solid #e5e7eb;border-radius:12px;padding:1.25rem;text-align:center;position:relative;}
+.plan-card.plan-premium{border-color:#f59e0b;background:#fffbeb;}
+.plan-badge-premium{background:#f59e0b;color:#78350f;}
 .plan-card.plan-popular{border-color:#6366f1;background:#f5f3ff;}
 .plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#6366f1;color:#fff;font-size:.7rem;font-weight:700;padding:.25rem .75rem;border-radius:99px;}
 .plan-icono{font-size:2rem;margin-bottom:.5rem;}

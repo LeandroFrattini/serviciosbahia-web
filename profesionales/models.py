@@ -102,10 +102,13 @@ class Resena(models.Model):
 PRECIO_1_RUBRO = 7500
 PRECIO_2_RUBROS = 10000
 PRECIO_MAS_RUBROS = 15000
+PRECIO_PREMIUM = 20000
 PRECIO_CLASIFICADO_SEMANA = 2500
 
 
-def calcular_precio_profesional(cantidad_rubros):
+def calcular_precio_profesional(cantidad_rubros, premium=False):
+    if premium:
+        return PRECIO_PREMIUM
     if cantidad_rubros == 1:
         return PRECIO_1_RUBRO
     elif cantidad_rubros == 2:
@@ -119,6 +122,7 @@ class Suscripcion(models.Model):
         ('1_rubro', '1 rubro - $7.500/mes'),
         ('2_rubros', '2 rubros - $10.000/mes'),
         ('mas_rubros', '3 o mas rubros - $15.000/mes'),
+        ('premium', 'Premium - $20.000/mes (incluye Instagram)'),
     ]
     METODO_CHOICES = [
         ('mercadopago', 'MercadoPago'),

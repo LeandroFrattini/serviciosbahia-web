@@ -670,7 +670,7 @@ footer {
 .pro-card {
     background: white;
     border-radius: 18px;
-    padding: 30px 25px;
+    padding: 35px 28px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
     display: flex;
@@ -687,9 +687,9 @@ footer {
 }
 
 .pro-card-foto {
-    width: 120px;
-    height: 120px;
-    border-radius: 14px;
+    width: 150px;
+    height: 150px;
+    border-radius: 16px;
     object-fit: cover;
     border: 3px solid #F7F9FC;
     margin: 0 auto;
@@ -697,14 +697,14 @@ footer {
 }
 
 .pro-card-foto-placeholder {
-    width: 120px;
-    height: 120px;
-    border-radius: 14px;
+    width: 150px;
+    height: 150px;
+    border-radius: 16px;
     background: #E8F4FD;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin: 0 auto;
 }
 

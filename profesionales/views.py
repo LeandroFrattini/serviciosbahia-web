@@ -15,7 +15,7 @@ from django.views.decorators.http import require_POST
 from .models import (
     Aviso, CategoriaAviso, FotoAviso, Profesional, Resena, Rubro,
     Suscripcion, Zona, calcular_precio_profesional,
-    PRECIO_1_RUBRO, PRECIO_2_RUBROS, PRECIO_MAS_RUBROS, PRECIO_CLASIFICADO_SEMANA,
+    PRECIO_1_RUBRO, PRECIO_2_RUBROS, PRECIO_MAS_RUBROS, PRECIO_CLASIFICADO_SEMANA, PRECIO_PREMIUM,
 )
 
 logger = logging.getLogger(__name__)
@@ -121,6 +121,7 @@ def unete(request):
         '1': PRECIO_1_RUBRO,
         '2': PRECIO_2_RUBROS,
         'mas': PRECIO_MAS_RUBROS,
+        'premium': PRECIO_PREMIUM,
     }
 
     if request.method == 'POST':
@@ -132,6 +133,7 @@ def unete(request):
         rubros_ids = request.POST.getlist('rubros')
         atiende_urgencias = request.POST.get('atiende_urgencias') == 'on'
         metodo_pago = request.POST.get('metodo_pago', 'mercadopago')
+        es_premium = request.POST.get('plan_premium') == 'on'
         zona_id = request.POST.get('zona')
         foto = request.FILES.get('foto')
 
@@ -155,9 +157,11 @@ def unete(request):
             })
 
         cantidad_rubros = len(rubros_ids)
-        precio = calcular_precio_profesional(cantidad_rubros)
+        precio = calcular_precio_profesional(cantidad_rubros, premium=es_premium)
 
-        if cantidad_rubros == 1:
+        if es_premium:
+            plan = 'premium'
+        elif cantidad_rubros == 1:
             plan = '1_rubro'
         elif cantidad_rubros == 2:
             plan = '2_rubros'
