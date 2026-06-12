@@ -8,52 +8,41 @@
   <p style="color:#666; margin-bottom:2rem;">Miles de vecinos de Bahia Blanca buscan profesionales como vos. Elegis el plan, pagas una vez y apareces al instante.</p>
 
   <!-- PLANES -->
-  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem;">
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem;">
 
     <div class="plan-card" id="plan-1">
-      <div class="plan-icono">1️⃣</div>
-      <div class="plan-nombre">1 rubro</div>
+      <div class="plan-icono">🔧</div>
+      <div class="plan-nombre">Básico</div>
       <div class="plan-precio">$7.500<span>/mes</span></div>
       <ul class="plan-features">
-        <li>Apareces en 1 categoria</li>
+        <li>Aparecés en 1 rubro</li>
         <li>Perfil con foto y WhatsApp</li>
-        <li>Resenas de clientes</li>
+        <li>Reseñas de clientes</li>
       </ul>
     </div>
 
     <div class="plan-card plan-popular" id="plan-2">
-      <div class="plan-badge">MAS ELEGIDO</div>
-      <div class="plan-icono">2️⃣</div>
-      <div class="plan-nombre">2 rubros</div>
-      <div class="plan-precio">$10.000<span>/mes</span></div>
-      <ul class="plan-features">
-        <li>Apareces en 2 categorias</li>
-        <li>Perfil con foto y WhatsApp</li>
-        <li>Resenas de clientes</li>
-      </ul>
-    </div>
-
-    <div class="plan-card" id="plan-mas">
+      <div class="plan-badge">MÁS ELEGIDO</div>
       <div class="plan-icono">⭐</div>
-      <div class="plan-nombre">3+ rubros</div>
-      <div class="plan-precio">$15.000<span>/mes</span></div>
+      <div class="plan-nombre">Profesional</div>
+      <div class="plan-precio">$12.500<span>/mes</span></div>
       <ul class="plan-features">
-        <li>Apareces en todos los rubros que quieras</li>
+        <li>Aparecés en hasta 3 rubros</li>
         <li>Perfil con foto y WhatsApp</li>
-        <li>Resenas de clientes</li>
+        <li>Reseñas de clientes</li>
       </ul>
     </div>
 
-    <div class="plan-card plan-premium" id="plan-premium">
+    <div class="plan-card plan-premium" id="plan-premium-card">
       <div class="plan-badge plan-badge-premium">⚡ PREMIUM</div>
       <div class="plan-icono">📲</div>
       <div class="plan-nombre">Premium</div>
       <div class="plan-precio">$20.000<span>/mes</span></div>
       <ul class="plan-features">
-        <li>Todos los rubros que quieras</li>
-        <li>Apareces en nuestro Instagram</li>
-        <li>Mayor visibilidad garantizada</li>
-        <li>Perfil destacado en la web</li>
+        <li>Rubros ilimitados</li>
+        <li>Publicación en nuestro Instagram</li>
+        <li>Perfil destacado en búsquedas</li>
+        <li>Máxima visibilidad</li>
       </ul>
     </div>
 
@@ -90,17 +79,7 @@
       <input type="text" name="ciudad" value="{{ form_data.ciudad|default:'' }}" placeholder="Ej: Bahia Blanca, Villa Mitre">
     </div>
 
-    <div class="form-group">
-      <label>Zona de atencion</label>
-      <select name="zona">
-        <option value="">-- Toda la ciudad --</option>
-        {% for zona in zonas %}
-        <option value="{{ zona.pk }}" {% if form_data.zona == zona.pk|stringformat:"s" %}selected{% endif %}>{{ zona.nombre }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="form-group">
+<div class="form-group">
       <label>Descripcion breve <small>(que hacen, cuanto experiencia, etc.)</small></label>
       <textarea name="descripcion" rows="3" placeholder="Contale a tus futuros clientes quien sos y que ofreces...">{{ form_data.descripcion|default:'' }}</textarea>
     </div>
@@ -122,7 +101,7 @@
     <h2 style="margin:1.5rem 0 .5rem;">Rubros <small id="precio-rubros-label" style="color:#6366f1;font-weight:600;"></small></h2>
     <p style="color:#666;margin-bottom:1rem;font-size:.9rem;">
       Selecciona los rubros en que queres aparecer. El precio se calcula automaticamente:
-      <strong>1 rubro $7.500</strong> · <strong>2 rubros $10.000</strong> · <strong>3 o mas $15.000</strong>
+      <strong>1 rubro $7.500</strong> · <strong>2 a 3 rubros $12.500</strong> · <strong>Premium (ilimitado + Instagram) $20.000</strong>
     </p>
     <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:.5rem; margin-bottom:1.5rem;">
       {% for rubro in rubros %}
@@ -132,6 +111,11 @@
         {{ rubro.icono }} {{ rubro.nombre }}
       </label>
       {% endfor %}
+    </div>
+    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1rem;font-size:.88rem;color:#0369a1;">
+      💬 <strong>¿No encontrás tu oficio?</strong> Escribinos por
+      <a href="https://wa.me/5492915787311?text=Hola!%20Quiero%20publicarme%20en%20Servicios%20Bah%C3%ADa%20con%20el%20oficio%3A%20" target="_blank" style="color:#0369a1;font-weight:700;text-decoration:underline;">WhatsApp</a>
+      y lo agregamos en el momento.
     </div>
     <div id="precio-resumen" style="background:#f0f4ff;border:1px solid #c7d2fe;border-radius:8px;padding:1rem;margin-bottom:1.5rem;display:none;">
       <strong>Total a pagar: <span id="precio-total-text"></span>/mes</strong>
@@ -201,8 +185,7 @@
 </style>
 
 <script>
-const PRECIOS = {1: 7500, 2: 10000};
-function calcularPrecio(n){ return n===1?7500:n===2?10000:15000; }
+function calcularPrecio(n){ return n===1?7500:12500; }
 function formatARS(n){ return '$'+n.toLocaleString('es-AR'); }
 
 document.querySelectorAll('input[name="rubros"]').forEach(cb => {
@@ -218,7 +201,8 @@ function actualizarPrecio(){
     label.textContent = '';
     resumen.style.display = 'none';
   } else {
-    const precio = calcularPrecio(seleccionados);
+    const esPremium = document.getElementById('plan_premium') && document.getElementById('plan_premium').checked;
+    const precio = esPremium ? 20000 : calcularPrecio(seleccionados);
     label.textContent = '— ' + formatARS(precio) + '/mes';
     totalText.textContent = formatARS(precio);
     resumen.style.display = 'block';

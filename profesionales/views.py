@@ -15,7 +15,7 @@ from django.views.decorators.http import require_POST
 from .models import (
     Aviso, CategoriaAviso, FotoAviso, Profesional, Resena, Rubro,
     Suscripcion, Zona, calcular_precio_profesional,
-    PRECIO_1_RUBRO, PRECIO_2_RUBROS, PRECIO_MAS_RUBROS, PRECIO_CLASIFICADO_SEMANA, PRECIO_PREMIUM,
+    PRECIO_1_RUBRO, PRECIO_HASTA_3_RUBROS, PRECIO_PREMIUM, PRECIO_CLASIFICADO_SEMANA,
 )
 
 logger = logging.getLogger(__name__)
@@ -119,8 +119,7 @@ def unete(request):
     zonas = Zona.objects.all()
     precios = {
         '1': PRECIO_1_RUBRO,
-        '2': PRECIO_2_RUBROS,
-        'mas': PRECIO_MAS_RUBROS,
+        'hasta_3': PRECIO_HASTA_3_RUBROS,
         'premium': PRECIO_PREMIUM,
     }
 
@@ -163,10 +162,8 @@ def unete(request):
             plan = 'premium'
         elif cantidad_rubros == 1:
             plan = '1_rubro'
-        elif cantidad_rubros == 2:
-            plan = '2_rubros'
         else:
-            plan = 'mas_rubros'
+            plan = 'hasta_3_rubros'
 
         # Crear profesional inactivo
         profesional = Profesional(
@@ -176,6 +173,7 @@ def unete(request):
             ciudad=ciudad,
             atiende_urgencias=atiende_urgencias,
             activo=False,
+            destacado=es_premium,  # premium aparece destacado en búsquedas
         )
         if zona_id:
             try:
