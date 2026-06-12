@@ -373,7 +373,7 @@ def nuevo_aviso(request):
             "items": [{
                 "title": f"Clasificado: {titulo}",
                 "quantity": 1,
-                "unit_price": precio_total,
+                "unit_price": float(precio_total),
                 "currency_id": "ARS",
             }],
             "payer": {"email": email_contacto},
@@ -382,9 +382,8 @@ def nuevo_aviso(request):
                 "failure": request.build_absolute_uri(f'/clasificados/pago/fallo/{aviso.pk}/'),
                 "pending": request.build_absolute_uri(f'/clasificados/pago/pendiente/{aviso.pk}/'),
             },
-            "auto_return": "approved",
             "external_reference": f"aviso_{aviso.pk}",
-            "notification_url": request.build_absolute_uri('/webhooks/mercadopago/'),
+        
         }
 
         response = sdk.preference().create(preference_data)
@@ -395,13 +394,12 @@ def nuevo_aviso(request):
             aviso.save()
             return redirect(result.get("init_point"))
         else:
-            logger.error("Error MP preference: %s", result)
-            messages.error(request, "Error al iniciar el pago. Intenta de nuevo.")
-            aviso.delete()
+            import json
+            error_detail = json.dumps(result, indent=2, ensure_ascii=False)
             return render(request, 'profesionales/nuevo_aviso.html', {
                 'categorias': categorias,
                 'precio_semana': precio_semana,
-                'errores': ["Error al conectar con MercadoPago. Intenta de nuevo."],
+                'errores': [f"Error MP: {error_detail}"],
                 'form_data': request.POST,
             })
 

@@ -5,4 +5,5 @@ gunicorn
 psycopg2-binary
 django-storages
 boto3
-Pillowmercadopago
+Pillow
+mercadopago
