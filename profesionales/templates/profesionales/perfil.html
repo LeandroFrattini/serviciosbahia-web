@@ -2,23 +2,23 @@
 {% load static %}
 
 {% block title %}{{ p.nombre }} | Servicios Bahía{% endblock %}
-{% block meta_description %}{{ p.nombre }}, {{ p.rubro }} en {{ p.ciudad }}. Contacto directo por WhatsApp.{% endblock %}
+{% block meta_description %}{{ p.nombre }}, {{ p.rubro_principal }} en {{ p.ciudad }}. Contacto directo por WhatsApp.{% endblock %}
 
 {% block content %}
 
 <main class="perfil-main">
     <div class="perfil-volver">
-        <a href="{% url 'rubro_detalle' p.rubro.slug %}" class="perfil-volver-link">← Volver a {{ p.rubro.nombre }}</a>
+        <a href="{% url 'rubro_detalle' p.rubro_principal.slug %}" class="perfil-volver-link">← Volver a {{ p.rubro_principal.nombre }}</a>
     </div>
     <div class="perfil-wrapper">
         <div class="perfil-col-izq">
             {% if p.foto %}
                 <img src="{{ p.foto.url }}" alt="{{ p.nombre }}" class="perfil-foto">
             {% else %}
-                <div class="perfil-foto-placeholder">{{ p.rubro.icono }}</div>
+                <div class="perfil-foto-placeholder">{{ p.rubro_principal.icono }}</div>
             {% endif %}
             <h1 class="perfil-nombre">{{ p.nombre }}</h1>
-            <p class="perfil-rubro">{{ p.rubro.nombre }}</p>
+            <p class="perfil-rubro">{{ p.rubro_principal.nombre }}</p>
             {% if p.ciudad %}
                 <p class="perfil-ciudad">📍 {{ p.ciudad }}</p>
             {% endif %}
@@ -62,7 +62,7 @@
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                     <div>
                         <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; font-weight: 700;">Rubro</p>
-                        <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.rubro.nombre }}</p>
+                        <p style="font-size: 0.95rem; color: #333; font-weight: 600; margin-top: 4px;">{{ p.rubro_principal.nombre }}</p>
                     </div>
                     {% if p.ciudad %}
                     <div>
