@@ -80,31 +80,43 @@ else:
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-if 'RENDER' in os.environ:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-else:
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
 WHITENOISE_MANIFEST_STRICT = False
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-if 'RENDER' in os.environ:
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-    SUBDOMAIN = os.environ.get('SUPABASE_SUBDOMAIN', '')
-    if all([AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME]):
-        DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-        AWS_S3_ENDPOINT_URL = f'https://{SUBDOMAIN}.supabase.co/storage/v1/s3'
-        AWS_S3_SIGNATURE_VERSION = 's3v4'
-        AWS_S3_FILE_OVERWRITE = False
-        AWS_DEFAULT_ACL = None
-        AWS_QUERYSTRING_AUTH = False
-        AWS_S3_VERIFY = True
-        AWS_S3_ADDRESSING_STYLE = 'path'
-        AWS_S3_REGION_NAME = 'us-east-1'
-        AWS_S3_CUSTOM_DOMAIN = f'{SUBDOMAIN}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
+_AWS_KEY    = os.environ.get('AWS_ACCESS_KEY_ID', '')
+_AWS_SECRET = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+_BUCKET     = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
+_SUBDOMAIN  = os.environ.get('SUPABASE_SUBDOMAIN', '')
+
+if 'RENDER' in os.environ and all([_AWS_KEY, _AWS_SECRET, _BUCKET, _SUBDOMAIN]):
+    AWS_ACCESS_KEY_ID     = _AWS_KEY
+    AWS_SECRET_ACCESS_KEY = _AWS_SECRET
+    AWS_STORAGE_BUCKET_NAME = _BUCKET
+    AWS_S3_ENDPOINT_URL   = f'https://{_SUBDOMAIN}.supabase.co/storage/v1/s3'
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL       = 'public-read'
+    AWS_QUERYSTRING_AUTH  = False
+    AWS_S3_VERIFY         = True
+    AWS_S3_ADDRESSING_STYLE = 'path'
+    AWS_S3_REGION_NAME    = 'us-east-1'
+    AWS_S3_CUSTOM_DOMAIN  = f'{_SUBDOMAIN}.supabase.co/storage/v1/object/public/{_BUCKET}'
+    STORAGES = {
+        "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
+else:
+    STORAGES = {
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            if 'RENDER' in os.environ
+            else "django.contrib.staticfiles.storage.StaticFilesStorage"
+        },
+    }
 
 LANGUAGE_CODE = 'es-ar'
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
