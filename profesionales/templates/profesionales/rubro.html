@@ -2,7 +2,41 @@
 {% load static %}
 
 {% block title %}{{ rubro.nombre }} en Bahía Blanca | Servicios Bahía{% endblock %}
-{% block meta_description %}Encontrá {{ rubro.nombre }} en Bahía Blanca. Contacto directo por WhatsApp.{% endblock %}
+{% block meta_description %}Encontrá los mejores {{ rubro.nombre }} en Bahía Blanca. Contacto directo por WhatsApp, sin intermediarios.{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ rubro.nombre }} en Bahía Blanca",
+  "description": "Listado de {{ rubro.nombre }} en Bahía Blanca, Argentina",
+  "url": "https://www.serviciosbahia.com.ar/{{ rubro.slug }}/",
+  "numberOfItems": {{ profesionales|length }},
+  "itemListElement": [
+    {% for p in profesionales %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "LocalBusiness",
+        "name": "{{ p.nombre }}",
+        "description": "{{ p.descripcion|truncatechars:150|escapejs }}",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Bahía Blanca",
+          "addressRegion": "Buenos Aires",
+          "addressCountry": "AR"
+        },
+        "telephone": "{{ p.whatsapp }}",
+        "url": "https://www.serviciosbahia.com.ar/{{ rubro.slug }}/perfil/{{ p.slug }}/"
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 

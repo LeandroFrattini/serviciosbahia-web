@@ -1,8 +1,33 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ p.nombre }} | Servicios Bahía{% endblock %}
-{% block meta_description %}{{ p.nombre }}, {{ p.rubro_principal }} en {{ p.ciudad }}. Contacto directo por WhatsApp.{% endblock %}
+{% block title %}{{ p.nombre }} - {{ p.rubro_principal }} en Bahía Blanca | Servicios Bahía{% endblock %}
+{% block meta_description %}{{ p.nombre }}, {{ p.rubro_principal }} en Bahía Blanca. {{ p.descripcion|truncatechars:120 }} Contacto directo por WhatsApp.{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ p.nombre }}",
+  "description": "{{ p.descripcion|truncatechars:200|escapejs }}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ p.ciudad|default:'Bahía Blanca' }}",
+    "addressRegion": "Buenos Aires",
+    "addressCountry": "AR"
+  },
+  "telephone": "{{ p.whatsapp }}",
+  "url": "https://www.serviciosbahia.com.ar/{{ p.rubro_principal.slug }}/perfil/{{ p.slug }}/",
+  {% if p.foto %}"image": "https://{{ request.get_host }}{{ p.foto.url }}",{% endif %}
+  "priceRange": "$$",
+  "areaServed": {
+    "@type": "City",
+    "name": "Bahía Blanca"
+  }
+}
+</script>
+{% endblock %}
 
 {% block content %}
 
